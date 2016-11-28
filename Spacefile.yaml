@@ -1,0 +1,85 @@
+_dep_install:
+    _info:
+        title: Install the latest Docker Engine and Compose.
+        desc: |
+            Downloads and installs the latest Docker Engine and Compose from Docker.
+            Also adds the targetuser to the docker group.
+    _env:
+        - targetuser: ${targetuser:-${SSHUSER-}}
+        - composeversion: "1.8.0"
+        - CMD: DOCKER_DEP_INSTALL "${targetuser-}" "${composeversion-}"
+enter:
+    _info:
+        title: Enter a running container.
+    _env:
+        - container: ${container-}
+        - shell: ${shell-}
+        - CMD: DOCKER_ENTER ${container-} ${shell-}
+ps:
+    _info:
+        title: List containers.
+    _env:
+        - CMD: DOCKER_PS
+rm:
+    status:
+        _info:
+            title: Remove container(s) by their status.
+        _env:
+            - CMD: DOCKER_RM_STATUS
+
+volume:
+    create:
+        _info:
+            title: Perform 'docker volume create'.
+        _env:
+            - volume: ${volume-}
+            - driver: ${driver-}
+            - opts: ${opts-}
+            - labels: ${labels-}
+            - CMD: DOCKER_VOLUME_CREATE -- ${volume-} ${driver-} ${opts-} ${labels-}
+    chmod:
+        _info:
+            title: Set the permissions and onwership of the mountpoint for the volume.
+        _env:
+            - volume: ${volume-}
+            - chmod: ${chmod-}
+            - chown: ${chown-}
+            - CMD: DOCKER_VOLUME_CHMOD -- ${volume-} ${chmod-} ${chown-}
+    rm:
+        _info:
+            title: Perform 'docker volume rm'.
+        _env:
+            - volume: ${volume-}
+            - CMD: DOCKER_VOLUME_RM -- ${volume-}
+    ls:
+        _info:
+            title: Perform 'docker volume ls'.
+        _env:
+            - CMD: DOCKER_VOLUME_LS
+    inspect:
+        _info:
+            title: Perform 'docker volume inspect'.
+        _env:
+            - volume: ${volume-}
+            - CMD: DOCKER_VOLUME_INSPECT -- ${volume-}
+    empty:
+        _info:
+            title: Delete all files in volume.
+        _env:
+            - volume: ${volume-}
+            - CMD: DOCKER_VOLUME_EMPTY -- ${volume-}
+    restore:
+        _info:
+            title: Restores a snapshot into a volume, possibly deletes all files first.
+        _env:
+            - volume: ${volume-}
+            - archive: ${archive-}
+            - rmrf: ${rmrf-}
+            - CMD: DOCKER_VOLUME_RESTORE -- ${volume-} ${archive-} ${rmrf-}
+    snapshot:
+        _info:
+            title: Perform 'docker volume create'.
+        _env:
+            - volume: ${volume-}
+            - archive: ${archive-}
+            - CMD: DOCKER_VOLUME_SNAPSHOT -- ${volume-} ${archive-}
