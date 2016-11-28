@@ -103,6 +103,8 @@ DOCKER_EXEC ()
     #shift $(( $# > 0 ? 1 : 0 ))
 
     PRINT "Exec in ${container}." "debug"
+    PRINT "cmd: ${cmd}." "debug"
+    PRINT "args: ${*}." "debug"
 
     # shellcheck disable=2086
     docker exec ${flags} "${container}" ${cmd} "${@}"
