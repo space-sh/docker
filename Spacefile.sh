@@ -24,25 +24,19 @@ clone os file
 #======================
 DOCKER_DEP_INSTALL ()
 {
-    SPACE_SIGNATURE="targetuser [composeversion]"
+    SPACE_SIGNATURE="targetuser"
     SPACE_CMDDEP="PRINT OS_UPGRADE OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
     SPACE_CMDENV="SUDO=\${SUDO-}"
 
     local targetuser="${1}"
     shift
 
-    local composeversion="${1:-1.8.0}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    PRINT "Install Docker Engine and Compose.." "info"
+    PRINT "Install Docker Engine.." "info"
 
     local SUDO="${SUDO-}"
-    OS_UPGRADE
     OS_IS_INSTALLED "curl" "curl"
     ${SUDO} curl -L https://get.docker.com/ | sh &&
     OS_USER_ADD_GROUP "${targetuser}" "docker" &&
-    ${SUDO} curl -L "https://github.com/docker/compose/releases/download/{$composeversion}/docker-compose-$(uname -s)-$(uname -m)" | ${SUDO} tee "/usr/local/bin/docker-compose" >/dev/null &&
-    ${SUDO} chmod +x /usr/local/bin/docker-compose
     OS_SERVICE "docker" "start"
 }
 

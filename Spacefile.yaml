@@ -16,14 +16,13 @@
 
 _dep_install:
     _info:
-        title: Install the latest Docker Engine and Compose.
+        title: Install the latest Docker Engine.
         desc: |
-            Downloads and installs the latest Docker Engine and Compose from Docker.
+            Downloads and installs the latest Docker Engine from Docker.
             Also adds the targetuser to the docker group.
     _env:
         - targetuser: ${targetuser:-${SSHUSER-}}
-        - composeversion: "1.8.0"
-        - CMD: DOCKER_DEP_INSTALL "${targetuser-}" "${composeversion-}"
+        - CMD: DOCKER_DEP_INSTALL "${targetuser-}"
 enter:
     _info:
         title: Enter a running container.
