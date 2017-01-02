@@ -16,11 +16,18 @@
 
 clone os file
 
-##======================
-## DOCKER_OS_DEP_INSTALL
-##
-## Install latest Docker on and make it available to the user.
-##
+#======================
+# DOCKER_OS_DEP_INSTALL
+#
+# Install latest Docker on and make it available to the user.
+#
+# Parameters:
+#   $1: user to add to docker group.
+#
+# Returns:
+#   0: success
+#   1: failure
+#
 #======================
 DOCKER_DEP_INSTALL ()
 {
@@ -40,21 +47,32 @@ DOCKER_DEP_INSTALL ()
     OS_SERVICE "docker" "start"
 }
 
-##=====================
-## DOCKER_RUN
-##
-##
-##=====================
+#=====================
+# DOCKER_RUN
+#
+# Create and start a container.
+#
+# Parameters:
+#   $1: image to instantiate
+#   $2: container name (optional)
+#   $3: flags (optional)
+#   $4: cmd (optional)
+#   $5: args (optional)
+#
+# Returns:
+#   docker run status
+#
+#=====================
 DOCKER_RUN ()
 {
-    SPACE_SIGNATURE="image container [flags cmd args]"
+    SPACE_SIGNATURE="image [container flags cmd args]"
     SPACE_CMDDEP="PRINT"
 
     local image="${1}"
     shift
 
-    local container="${1}"
-    shift
+    local container="${1-}"
+    shift $(( $# > 0 ? 1 : 0 ))
 
     local flags="${1-}"
     shift $(( $# > 0 ? 1 : 0 ))
@@ -63,12 +81,15 @@ DOCKER_RUN ()
     shift $(( $# > 0 ? 1 : 0 ))
 
     local args="${1-}"
-    #shift $(( $# > 0 ? 1 : 0 ))
+
+    if [ -z "${image}" ]; then
+        PRINT "Missing args: image [container flags cmd args]" "error"
+        return 1
+    fi
 
     if [ "${args}" != "" ] && [ "${cmd}" = "" ]; then
         PRINT "Cannot have args without cmd, setting default: sh -c." "debug"
         cmd="sh -c"
-        return 1
     fi
 
     PRINT "Run ${image}." "debug"
@@ -77,24 +98,41 @@ DOCKER_RUN ()
     docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} "${@}"
 }
 
-##=====================
-## DOCKER_RUN_WRAP
-##
-##
-##=====================
+#=====================
+# DOCKER_RUN_WRAP
+#
+# Wrap a command to be run inside a newly created container.
+#
+# Env:
+#   image
+#   container (optional)
+#   flags
+#   cmd
+#
+#=====================
 DOCKER_RUN_WRAP ()
 {
     SPACE_CMD="DOCKER_RUN"
     SPACE_CMDENV="image container=\${container-} flags cmd"
     # shellcheck disable=2016
-    SPACE_CMDARGS='"${image}" "${container-}" "${flags}" "${cmd}" "${CMD}"'
+    SPACE_CMDARGS='"${image}" "${container}" "${flags}" "${cmd}" "${CMD}"'
 }
 
-##=====================
-## DOCKER_EXEC
-##
-##
-##=====================
+#=====================
+# DOCKER_EXEC
+#
+# Exec command in existing docker container.
+#
+# Parameters:
+#   $1: container name
+#   $2: flags
+#   $3: cmd
+#   $4: args (optional)
+#
+# Returns:
+#   docker exec status
+#
+#=====================
 DOCKER_EXEC ()
 {
     SPACE_SIGNATURE="container flags cmd [args]"
@@ -109,22 +147,52 @@ DOCKER_EXEC ()
     local cmd="${1}"
     shift
 
-    #local args="${1-}"
-    #shift $(( $# > 0 ? 1 : 0 ))
+    if [ "${cmd}" = "" ]; then
+        PRINT "Setting default cmd: sh -c." "debug"
+        cmd="sh -c"
+    fi
 
     PRINT "Exec in ${container}." "debug"
     PRINT "cmd: ${cmd}." "debug"
-    PRINT "args: ${*}." "debug"
 
     # shellcheck disable=2086
     docker exec ${flags} "${container}" ${cmd} "${@}"
 }
 
-##=====================
-## DOCKER_ENTER
-##
-##
-##=====================
+#=====================
+# DOCKER_EXEC_WRAP
+#
+# Wrap another command to be run inside an existing container.
+#
+# Env:
+#   container
+#   flags (optional)
+#   cmd (optional)
+#   CMD is the space function to be wrapped.
+#
+#=====================
+DOCKER_EXEC_WRAP ()
+{
+    SPACE_CMD="DOCKER_EXEC"
+    # shellcheck disable=2034
+    SPACE_CMDENV="container flags=\${flags-} cmd=\${cmd-}"
+    # shellcheck disable=2016
+    SPACE_CMDARGS='"${container}" "${flags}" "${cmd}" "${CMD}"'
+}
+
+#=====================
+# DOCKER_ENTER
+#
+# Start shell inside existing docker container.
+#
+# Parameters:
+#   $1: container name
+#   $2: shell (optional, defaults to sh)
+#
+# Returns:
+#   docker exec status
+#
+#=====================
 DOCKER_ENTER ()
 {
     SPACE_SIGNATURE="container [shell]"
@@ -142,11 +210,36 @@ DOCKER_ENTER ()
     docker exec -ti "${container}" ${shell}
 }
 
-##=============================
-## DOCKER_RM_STATUS
-##
-##=============================
-DOCKER_RM_STATUS ()
+#=============================
+# DOCKER_LS_BY_STATUS
+#
+# List all containers filtered by status.
+#
+# Parameters;
+#   $1: status string, ex "Exited".
+#
+#=============================
+DOCKER_LS_BY_STATUS ()
+{
+    # shellcheck disable=SC2034
+    SPACE_SIGNATURE="status"
+
+    local status="${1}"
+    shift
+
+    docker ps -a | grep "${status}" | awk '{print $1}'
+}
+
+#=============================
+# DOCKER_RM_BY_STATUS
+#
+# Remove all containers filtered by their status.
+#
+# Parameters;
+#   $1: status string, ex "Exited".
+#
+#=============================
+DOCKER_RM_BY_STATUS ()
 {
     # shellcheck disable=SC2034
     SPACE_SIGNATURE="status"
@@ -157,29 +250,46 @@ DOCKER_RM_STATUS ()
     docker ps -a | grep "${status}" | awk '{print $1}' | xargs docker rm -f
 }
 
-##=====================
-## DOCKER_PS
-##
-##
-##=====================
+#=============================
+# DOCKER_RM_BY_ID
+#
+# Remove all containers by ID or name.
+#
+# Parameters;
+#   $1: IDs
+#
+#=============================
+DOCKER_RM_BY_ID ()
+{
+    # shellcheck disable=SC2034
+    SPACE_SIGNATURE="ids"
+
+    local ids="${1}"
+    shift
+
+    local id=
+    for id in ${ids}; do
+        docker rm -f "${id}"
+    done
+}
+
+#=====================
+# DOCKER_PS
+#
+# Run "docker ps" to list all container.s
+#
+# Paramters:
+#   All arguments are passed on.
+#
+#=====================
 DOCKER_PS ()
 {
     docker ps ${@:+"$@"}
 }
 
-##=====================
-## DOCKER_EXEC_WRAP
-##
-##
-##=====================
-DOCKER_EXEC_WRAP ()
-{
-    SPACE_CMD="DOCKER_EXEC"
-    # shellcheck disable=2034
-    SPACE_CMDENV="container flags cmd"
-    # shellcheck disable=2016
-    SPACE_CMDARGS='"${container}" "${flags}" "${cmd}" "${CMD}"'
-}
+
+
+##########################################################3
 
 ##=====================
 ## DOCKER_VOLUME_RM

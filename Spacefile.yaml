@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+_info:
+    title: Docker container management.
+
 _dep_install:
     _info:
         title: Install the latest Docker Engine.
@@ -21,26 +24,62 @@ _dep_install:
             Downloads and installs the latest Docker Engine from Docker.
             Also adds the targetuser to the docker group.
     _env:
-        - targetuser: ${targetuser:-${SSHUSER-}}
-        - CMD: DOCKER_DEP_INSTALL "${targetuser-}"
+        - targetuser: ${targetuser:-${SSHUSER:-$USER}}
+        - CMD: DOCKER_DEP_INSTALL -- "${targetuser}"
+
+run:
+    _info:
+        title: Run a container
+    _env:
+        - CMD: DOCKER_RUN -- "${image-}" "${container-}" "${flags-}" "${cmd-}" "${args-}"
+
+ls_by_status:
+    _info:
+        title: List container(s) by their status
+    _env:
+        - status: ${status:-Up}
+        - CMD: DOCKER_LS_BY_STATUS -- "${status}"
+
+rm_by_status:
+    _info:
+        title: Remove container(s) by their status
+    _env:
+        - status: ${status:-Exited}
+        - CMD: DOCKER_RM_BY_STATUS -- "${status}"
+
+rm_by_id:
+    _info:
+        title: Remove container(s) by their id
+    _env:
+        - ids:
+        - CMD: DOCKER_RM_BY_ID -- "${ids}"
+
 enter:
     _info:
         title: Enter a running container.
     _env:
         - container: ${container-}
         - shell: ${shell-}
-        - CMD: DOCKER_ENTER ${container-} ${shell-}
+        - CMD: DOCKER_ENTER -- "${container-}" "${shell-}"
+
 ps:
     _info:
         title: List containers.
     _env:
         - CMD: DOCKER_PS
-rm:
-    status:
-        _info:
-            title: Remove container(s) by their status.
-        _env:
-            - CMD: DOCKER_RM_STATUS
+
+exec_wrap:
+    _info:
+        title: Exec a command inside a docker container
+    _env:
+        - CMDWRAP: DOCKER_EXEC_WRAP
+
+
+
+
+
+
+
 
 volume:
     create:
