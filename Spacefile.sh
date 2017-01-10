@@ -14,15 +14,19 @@
 # limitations under the License.
 #
 
-clone os file
+clone os
 
 #======================
-# DOCKER_OS_DEP_INSTALL
+# DOCKER_DEP_INSTALL
 #
-# Install latest Docker on and make it available to the user.
+# Verify that Docker Engine is installed
+# otherwise install it.
 #
 # Parameters:
 #   $1: user to add to docker group.
+#
+# Expects:
+#   ${SUDO}: set to "sudo" to run as sudo.
 #
 # Returns:
 #   0: success
@@ -32,17 +36,48 @@ clone os file
 DOCKER_DEP_INSTALL ()
 {
     SPACE_SIGNATURE="targetuser"
-    SPACE_CMDDEP="PRINT OS_UPGRADE OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
+    SPACE_CMDDEP="PRINT DOCKER_INSTALL"
+
+    local targetuser="${1}"
+    shift
+
+    if OS_IS_INSTALLED "docker"; then
+        PRINT "Docker is already installed. To reinstall run: space -m docker /install/." "success"
+        return 0
+    fi
+
+    DOCKER_INSTALL "${targetuser}"
+}
+
+#======================
+# DOCKER_INSTALL
+#
+# Install latest Docker and make it available to the user.
+#
+# Parameters:
+#   $1: user to add to docker group.
+#
+# Expects:
+#   ${SUDO}: set to "sudo" to run as sudo.
+#
+# Returns:
+#   0: success
+#   1: failure
+#
+#======================
+DOCKER_INSTALL ()
+{
+    SPACE_SIGNATURE="targetuser"
+    SPACE_CMDDEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
     SPACE_CMDENV="SUDO=\${SUDO-}"
 
     local targetuser="${1}"
     shift
 
     PRINT "Install Docker Engine.." "info"
-
     local SUDO="${SUDO-}"
     OS_IS_INSTALLED "curl" "curl"
-    ${SUDO} curl -L https://get.docker.com/ | sh &&
+    ${SUDO} curl -sL https://get.docker.com/ | sh &&
     OS_USER_ADD_GROUP "${targetuser}" "docker" &&
     OS_SERVICE "docker" "start"
 }
@@ -92,7 +127,7 @@ DOCKER_RUN ()
         cmd="sh -c"
     fi
 
-    PRINT "Run ${image}." "debug"
+    PRINT "Run ${image} flags: ${flags}." "debug"
 
     # shellcheck disable=2086
     docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} "${@}"
@@ -103,11 +138,11 @@ DOCKER_RUN ()
 #
 # Wrap a command to be run inside a newly created container.
 #
-# Env:
-#   image
-#   container (optional)
-#   flags
-#   cmd
+# Expects:
+#   ${image}
+#   ${container} (optional)
+#   ${flags}
+#   ${cmd}
 #
 #=====================
 DOCKER_RUN_WRAP ()
@@ -164,18 +199,18 @@ DOCKER_EXEC ()
 #
 # Wrap another command to be run inside an existing container.
 #
-# Env:
-#   container
-#   flags (optional)
-#   cmd (optional)
-#   CMD is the space function to be wrapped.
+# Expects:
+#   ${container}
+#   ${flags} (optional)
+#   ${cmd} (optional)
+#   ${CMD is the space function to be wrapped.}
 #
 #=====================
 DOCKER_EXEC_WRAP ()
 {
     SPACE_CMD="DOCKER_EXEC"
     # shellcheck disable=2034
-    SPACE_CMDENV="container flags=\${flags-} cmd=\${cmd-}"
+    SPACE_CMDENV="container flags=\${flags--i} cmd=\${cmd-}"
     # shellcheck disable=2016
     SPACE_CMDARGS='"${container}" "${flags}" "${cmd}" "${CMD}"'
 }
@@ -278,446 +313,11 @@ DOCKER_RM_BY_ID ()
 #
 # Run "docker ps" to list all container.s
 #
-# Paramters:
-#   All arguments are passed on.
+# Parameters:
+#   $@: All arguments are passed on.
 #
 #=====================
 DOCKER_PS ()
 {
     docker ps ${@:+"$@"}
-}
-
-
-
-##########################################################3
-
-##=====================
-## DOCKER_VOLUME_RM
-##
-##
-##=====================
-DOCKER_VOLUME_RM ()
-{
-    SPACE_SIGNATURE="volume [volume]"
-    docker volume rm "${@}"
-}
-
-##=====================
-## DOCKER_VOLUME_LS
-##
-##
-##=====================
-DOCKER_VOLUME_LS ()
-{
-    SPACE_SIGNATURE="[flags]"
-    docker volume ls "${@}"
-}
-
-##=====================
-## DOCKER_LOGS
-##
-##
-##=====================
-DOCKER_LOGS ()
-{
-    SPACE_SIGNATURE="container [flags]"
-    docker logs "${@}"
-}
-
-##======================
-## DOCKER_VOLUME_RESTORE
-##
-## Restore a tar.gz archive or local dir into a volume,
-## possibly delete all files in volume first.
-##
-## If archive is local dir, beware of permissions, all files
-## will be extraced as root:root, which may brake stuff if
-## your applications runs as other users than root.
-## However when restoring a snapshot tar.gz taken, permissions are preserved.
-##
-## If using $useacl=1, which is the default, then a permissions
-## dump is taken of the target directory and is used to restore
-## permissions after the snapshot have been extracted.
-##
-##=====================
-DOCKER_VOLUME_RESTORE()
-{
-    SPACE_SIGNATURE="volumename archive.tar.gz|dir|- [rmrf targetdir image savepermissions flags]"
-    SPACE_CMD="_DOCKER_VOLUME_RESTORE_IMPL"
-    SPACE_CMDWRAP="DOCKER_RUN_WRAP"
-
-    local volume="${1}"
-    shift
-
-    local archive="${1}"
-    shift
-
-    local rmrf="${1:-0}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    local targetdir="${1:-/volume}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    image="${1:-alpine}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    local savepermissions="${1:-1}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    flags="${1:-}"
-    shift $(( $# > 0 ? 1 : 0 ))
-    if [ "${flags}" = "" ]; then
-        flags="-i --rm -v ${volume}:${targetdir}"
-    fi
-
-    if [ "${archive}" = "-" ]; then
-        if [ -t "0" ]; then
-            PRINT "OMG STDIN is a terminal! I was totally expecting a tar.gz stream." "error"
-            return 1
-        fi
-    else
-        if [ -d "${archive}" ]; then
-            # TODO Bashism
-            SPACE_CMDREDIR="< <(cd ${archive}; tar -cvzf --owner=root --group=root - .)"
-        else
-            SPACE_CMDREDIR="<${archive}"
-        fi
-    fi
-
-    # These variables will get exported.
-    container=
-    cmd="sh -c"
-
-    SPACE_CMDARGS="\"${targetdir}\" \"${rmrf}\" \"${savepermissions}\""
-}
-
-##=====================
-## _DOCKER_VOLUME_RESTORE_IMPL
-##
-##
-##=====================
-_DOCKER_VOLUME_RESTORE_IMPL ()
-{
-    SPACE_SIGNATURE="targetdir rmrf savepermissions"
-    SPACE_CMDDEP="PRINT FILE_GET_PERMISSIONS FILE_RESTORE_PERMISSIONS"
-
-    local targetdir="${1}"
-    shift
-
-    local rmrf="${1}"
-    shift
-
-    local savepermissions="${1}"
-    shift
-
-    if [ -t "0" ]; then
-        PRINT "OMG STDIN is a terminal! I was so expecting a tar.gz stream." "error"
-        return 1
-    fi
-
-    if ! mountpoint -q "${targetdir}"; then
-        PRINT "Target dir ${targetdir} is not a mountpoint, it must be a mounted volume." "error"
-        return 1
-    fi
-
-    if [ "${rmrf}" = "1" ]; then
-        rm -rf "${targetdir:?}/"* 2>/dev/null
-    fi
-
-    local permissions=
-    if [ "${savepermissions}" = "1" ]; then
-        permissions="$(FILE_GET_PERMISSIONS "${targetdir}")"
-    fi
-
-    PRINT "tar -xvz -C ${targetdir}" "debug"
-
-    tar -xvz -C "${targetdir}"
-    if [ "$?" -gt 0 ]; then
-        return 1
-    fi
-
-    if [ "${savepermissions}" = "1" ]; then
-        FILE_RESTORE_PERMISSIONS "${targetdir}" "${permissions}"
-    fi
-}
-
-##======================
-## DOCKER_VOLUME_EMPTY
-##
-## Delete all files in a volume.
-##
-##=====================
-DOCKER_VOLUME_EMPTY ()
-{
-    SPACE_SIGNATURE="volume [targetdir image flags]"
-    SPACE_CMD="_DOCKER_VOLUME_EMPTY_IMPL"
-    SPACE_CMDWRAP="DOCKER_RUN_WRAP"
-
-    local volume="${1}"
-    shift
-
-    local targetdir="${1:-/volume}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    image="${1:-alpine}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    flags="${1-}"
-    shift $(( $# > 0 ? 1 : 0 ))
-    if [ "${flags}" = "" ]; then
-        flags="-i --rm -v ${volume}:${targetdir}"
-    fi
-
-    # These variables will get exported.
-    container=
-    cmd="sh -c"
-
-    SPACE_CMDARGS="\"${targetdir}\""
-}
-
-##=====================
-## _DOCKER_VOLUME_EMPTY_IMPL
-##
-##
-##=====================
-_DOCKER_VOLUME_EMPTY_IMPL ()
-{
-    SPACE_SIGNATURE="targetdir"
-    # shellcheck disable=2034
-    SPACE_CMDDEP="PRINT"
-
-    local targetdir="${1}"
-    shift
-
-    if ! mountpoint -q "${targetdir}"; then
-        PRINT "Target dir ${targetdir} is not a mountpoint, it must be a mounted volume." "error"
-        return 1
-    fi
-
-    rm -rf "${targetdir:?}/"* 2>/dev/null
-}
-
-##======================
-## DOCKER_VOLUME_CHMOD
-##
-## Set the permissions of the mountpoint for a volume.
-##
-##=====================
-DOCKER_VOLUME_CHMOD ()
-{
-    SPACE_SIGNATURE="volume chmod [chown targetdir image flags]"
-    SPACE_CMD="_DOCKER_VOLUME_CHMOD_IMPL"
-    SPACE_CMDWRAP="DOCKER_RUN_WRAP"
-
-    local volume="${1}"
-    shift
-
-    local chmod="${1}"
-    shift
-
-    local chown="${1-}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    local targetdir="${1:-/volume}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    image="${1:-alpine}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    flags="${1-}"
-    shift $(( $# > 0 ? 1 : 0 ))
-    if [ "${flags}" = "" ]; then
-        flags="-i --rm -v ${volume}:${targetdir}"
-    fi
-
-    # These variables will get exported.
-    container=
-    cmd="sh -c"
-
-    SPACE_CMDARGS="\"${targetdir}\" \"${chmod}\" \"${chown}\""
-}
-
-##=====================
-## _DOCKER_VOLUME_CHMOD_IMPL
-##
-##
-##=====================
-_DOCKER_VOLUME_CHMOD_IMPL ()
-{
-    SPACE_SIGNATURE="targetdir chmod [chown]"
-    SPACE_CMDDEP="PRINT"
-
-    local targetdir="${1}"
-    shift
-
-    local _chmod="${1}"
-    shift
-
-    local _chown="${1-}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    if ! mountpoint -q "${targetdir}"; then
-        PRINT "Target dir ${targetdir} is not a mountpoint, it must be a mounted volume." "error"
-        return 1
-    fi
-
-    if [ -n "${_chmod}" ]; then
-        chmod "${_chmod}" "${targetdir}"
-    fi
-    if [ -n "${_chown}" ]; then
-        chown "${_chown}" "${targetdir}"
-    fi
-}
-
-##=====================
-## DOCKER_VOLUME_CREATE
-##
-## docker volume create.
-##
-##=====================
-DOCKER_VOLUME_CREATE()
-{
-    SPACE_SIGNATURE="volumename [driver opts label]"
-    SPACE_CMDDEP="PRINT"
-
-    local volume="${1}"
-    shift
-
-    local driver="${1-}"
-    shift
-
-    local opts="${1-}"
-    shift
-
-    # TODO allow for more than one label.
-    local label="${1-}"
-    shift
-
-    PRINT "Create Docker volume" "debug"
-    # shellcheck disable=2086
-    docker volume create --name "${volume}" ${driver:+--driver ${driver}} ${opts:+--opt ${opts}} ${label:+--label ${label}}
-}
-
-##=====================
-## DOCKER_VOLUME_INSPECT
-##
-##
-##=====================
-DOCKER_VOLUME_INSPECT ()
-{
-    SPACE_SIGNATURE="volume [args]"
-    docker volume inspect "${@}"
-}
-
-##=====================
-## DOCKER_INSPECT
-##
-##
-##=====================
-DOCKER_INSPECT ()
-{
-    SPACE_SIGNATURE="container [args]"
-    docker inspect "${@}"
-}
-
-##=====================
-## DOCKER_COMPOSE
-##
-##
-##=====================
-DOCKER_COMPOSE ()
-{
-    SPACE_SIGNATURE="args"
-    docker-compose "${@}"
-}
-
-##=======================
-## DOCKER_VOLUME_SNAPSHOT
-##
-## Archive all files inside volume into
-## a tar.gz archive, or optionally to stdout.
-##
-##=======================
-DOCKER_VOLUME_SNAPSHOT ()
-{
-    SPACE_SIGNATURE="volumename archive.tar.gz|dir|- [targetdir image flags]"
-    # shellcheck disable=2034
-    SPACE_CMDWRAP="DOCKER_RUN_WRAP"
-    # shellcheck disable=2034
-    SPACE_CMD="_DOCKER_VOLUME_SNAPSHOT_IMPL"
-
-    local volume="${1}"
-    shift
-
-    local archive="${1}"
-    shift
-
-    local targetdir="${1:-/volume}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    image="${1:-alpine}"
-    shift $(( $# > 0 ? 1 : 0 ))
-
-    # This variable will get exported.
-    flags="${1-}"
-    shift $(( $# > 0 ? 1 : 0 ))
-    if [ "${flags}" = "" ]; then
-        flags="-i --rm -v ${volume}:${targetdir}"
-    fi
-
-    if [ "${archive}" = "-" ]; then
-        if [ -t 1 ]; then
-            PRINT "[error] OMG STDOUT is a terminal! You do not want this." "error"
-            return 1
-        fi
-    else
-        if [ -d "${archive}" ]; then
-            # shellcheck disable=2034
-            SPACE_CMDREDIR="| tar -xzf - -C ${archive}"
-        else
-            # shellcheck disable=2034
-            SPACE_CMDREDIR=">${archive}"
-        fi
-    fi
-
-    # These variables will get exported.
-    container=
-    cmd="sh -c"
-    # shellcheck disable=2034
-    SPACE_CMDARGS="${targetdir}"
-}
-
-##=======================
-## _DOCKER_VOLUME_SNAPSHOT_IMPL
-##
-##
-##=======================
-_DOCKER_VOLUME_SNAPSHOT_IMPL ()
-{
-    # shellcheck disable=2034
-    SPACE_SIGNATURE="targetdir"
-    # shellcheck disable=2034
-    SPACE_CMDDEP="PRINT"
-
-    local targetdir="${1}"
-    shift
-
-    if [ -t "1" ]; then
-        PRINT "OMG STDOUT is a terminal! We are so different, you and I." "error"
-        return 1
-    fi
-
-    if ! mountpoint -q "${targetdir}"; then
-        PRINT "Target dir ${targetdir} is not a mountpoint, it must be a mounted volume." "error"
-        return 1
-    fi
-
-    cd "${targetdir}" && tar -cvz .
 }

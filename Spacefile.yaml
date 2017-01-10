@@ -19,13 +19,25 @@ _info:
 
 _dep_install:
     _info:
+        title: Verify dependencies for this module.
+        desc: |
+            If docker is not already installed it will
+            download and install the latest Docker Engine from Docker and
+            add the targetuser to the docker group.
+    _env:
+        - targetuser: ${targetuser:-${SSHUSER:-$USER}}
+        - CMD: DOCKER_DEP_INSTALL -- "${targetuser}"
+
+install:
+    _info:
         title: Install the latest Docker Engine.
         desc: |
             Downloads and installs the latest Docker Engine from Docker.
             Also adds the targetuser to the docker group.
+            Will reinstall if already installed.
     _env:
         - targetuser: ${targetuser:-${SSHUSER:-$USER}}
-        - CMD: DOCKER_DEP_INSTALL -- "${targetuser}"
+        - CMD: DOCKER_INSTALL -- "${targetuser}"
 
 run:
     _info:
@@ -73,67 +85,3 @@ exec_wrap:
         title: Exec a command inside a docker container
     _env:
         - CMDWRAP: DOCKER_EXEC_WRAP
-
-
-
-
-
-
-
-
-volume:
-    create:
-        _info:
-            title: Perform 'docker volume create'.
-        _env:
-            - volume: ${volume-}
-            - driver: ${driver-}
-            - opts: ${opts-}
-            - labels: ${labels-}
-            - CMD: DOCKER_VOLUME_CREATE -- ${volume-} ${driver-} ${opts-} ${labels-}
-    chmod:
-        _info:
-            title: Set the permissions and onwership of the mountpoint for the volume.
-        _env:
-            - volume: ${volume-}
-            - chmod: ${chmod-}
-            - chown: ${chown-}
-            - CMD: DOCKER_VOLUME_CHMOD -- ${volume-} ${chmod-} ${chown-}
-    rm:
-        _info:
-            title: Perform 'docker volume rm'.
-        _env:
-            - volume: ${volume-}
-            - CMD: DOCKER_VOLUME_RM -- ${volume-}
-    ls:
-        _info:
-            title: Perform 'docker volume ls'.
-        _env:
-            - CMD: DOCKER_VOLUME_LS
-    inspect:
-        _info:
-            title: Perform 'docker volume inspect'.
-        _env:
-            - volume: ${volume-}
-            - CMD: DOCKER_VOLUME_INSPECT -- ${volume-}
-    empty:
-        _info:
-            title: Delete all files in volume.
-        _env:
-            - volume: ${volume-}
-            - CMD: DOCKER_VOLUME_EMPTY -- ${volume-}
-    restore:
-        _info:
-            title: Restores a snapshot into a volume, possibly deletes all files first.
-        _env:
-            - volume: ${volume-}
-            - archive: ${archive-}
-            - rmrf: ${rmrf-}
-            - CMD: DOCKER_VOLUME_RESTORE -- ${volume-} ${archive-} ${rmrf-}
-    snapshot:
-        _info:
-            title: Perform 'docker volume create'.
-        _env:
-            - volume: ${volume-}
-            - archive: ${archive-}
-            - CMD: DOCKER_VOLUME_SNAPSHOT -- ${volume-} ${archive-}
