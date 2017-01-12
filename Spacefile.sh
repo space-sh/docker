@@ -266,6 +266,17 @@ DOCKER_LS_BY_STATUS ()
 }
 
 #=============================
+# DOCKER_RMI_ALL
+#
+# Remove all docker images.
+#
+#=============================
+DOCKER_RMI_ALL()
+{
+    docker images -q | xargs docker rmi -f
+}
+
+#=============================
 # DOCKER_RM_BY_STATUS
 #
 # Remove all containers filtered by their status.

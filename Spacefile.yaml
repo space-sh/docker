@@ -66,6 +66,12 @@ rm_by_id:
         - ids:
         - CMD: DOCKER_RM_BY_ID -- "${ids}"
 
+rmi_all:
+    _info:
+        title: Remove all docker images
+    _env:
+        - CMD: DOCKER_RMI_ALL
+
 enter:
     _info:
         title: Enter a running container.
