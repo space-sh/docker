@@ -127,7 +127,7 @@ DOCKER_RUN ()
         cmd="sh -c"
     fi
 
-    PRINT "Run ${image} flags: ${flags}." "debug"
+    PRINT "Run image ${image} flags: ${flags}." "debug"
 
     # shellcheck disable=2086
     docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} "${@}"
@@ -148,9 +148,9 @@ DOCKER_RUN ()
 DOCKER_RUN_WRAP ()
 {
     SPACE_CMD="DOCKER_RUN"
-    SPACE_CMDENV="image container=\${container-} flags cmd"
+    SPACE_CMDENV="image container=\${container-} flags cmd=\${cmd-}"
     # shellcheck disable=2016
-    SPACE_CMDARGS='"${image}" "${container}" "${flags}" "${cmd}" "${CMD}"'
+    SPACE_CMDARGS='"${image}" "${container}" "${flags}" "${cmd-}" "${CMD}"'
 }
 
 #=====================

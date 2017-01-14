@@ -88,6 +88,14 @@ ps:
 
 exec_wrap:
     _info:
-        title: Exec a command inside a docker container
+        title: Exec a command inside an existing container
     _env:
         - CMDWRAP: DOCKER_EXEC_WRAP
+
+run_wrap:
+    _info:
+        title: Exec a command inside a temporary container
+    _env:
+        - image: alpine
+        - flags: "--rm -ti"
+        - CMDWRAP: DOCKER_RUN_WRAP
