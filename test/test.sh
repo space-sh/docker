@@ -19,7 +19,7 @@ _source "${DIR}/../Spacefile.sh"
 _DOCKER_CHECK_NO_VOLUME ()
 {
     SPACE_SIGNATURE="name"
-    SPACE_CMDDEP="DOCKER_VOLUME_LS PRINT"
+    SPACE_DEP="DOCKER_VOLUME_LS PRINT"
 
     local name="${1}"
     shift
@@ -37,7 +37,7 @@ _DOCKER_CHECK_VOLUME ()
     # shellcheck disable=2034
     SPACE_SIGNATURE="name"
     # shellcheck disable=2034
-    SPACE_CMDDEP="DOCKER_VOLUME_LS PRINT"
+    SPACE_DEP="DOCKER_VOLUME_LS PRINT"
 
     local name="${1}"
     shift

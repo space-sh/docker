@@ -36,7 +36,7 @@ clone os
 DOCKER_DEP_INSTALL ()
 {
     SPACE_SIGNATURE="targetuser"
-    SPACE_CMDDEP="PRINT DOCKER_INSTALL"
+    SPACE_DEP="PRINT DOCKER_INSTALL"
 
     local targetuser="${1}"
     shift
@@ -68,8 +68,8 @@ DOCKER_DEP_INSTALL ()
 DOCKER_INSTALL ()
 {
     SPACE_SIGNATURE="targetuser"
-    SPACE_CMDDEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
-    SPACE_CMDENV="SUDO=\${SUDO-}"
+    SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
+    SPACE_ENV="SUDO=\${SUDO-}"
 
     local targetuser="${1}"
     shift
@@ -101,7 +101,7 @@ DOCKER_INSTALL ()
 DOCKER_RUN ()
 {
     SPACE_SIGNATURE="image [container flags cmd args]"
-    SPACE_CMDDEP="PRINT"
+    SPACE_DEP="PRINT"
 
     local image="${1}"
     shift
@@ -147,10 +147,10 @@ DOCKER_RUN ()
 #=====================
 DOCKER_RUN_WRAP ()
 {
-    SPACE_CMD="DOCKER_RUN"
-    SPACE_CMDENV="image container=\${container-} flags cmd=\${cmd-}"
+    SPACE_FN="DOCKER_RUN"
+    SPACE_ENV="image container=\${container-} flags cmd=\${cmd-}"
     # shellcheck disable=2016
-    SPACE_CMDARGS='"${image}" "${container}" "${flags}" "${cmd-}" "${CMD}"'
+    SPACE_ARGS='"${image}" "${container}" "${flags}" "${cmd-}" "${CMD}"'
 }
 
 #=====================
@@ -171,7 +171,7 @@ DOCKER_RUN_WRAP ()
 DOCKER_EXEC ()
 {
     SPACE_SIGNATURE="container flags cmd [args]"
-    SPACE_CMDDEP="PRINT"
+    SPACE_DEP="PRINT"
 
     local container="${1}"
     shift
@@ -208,11 +208,11 @@ DOCKER_EXEC ()
 #=====================
 DOCKER_EXEC_WRAP ()
 {
-    SPACE_CMD="DOCKER_EXEC"
+    SPACE_FN="DOCKER_EXEC"
     # shellcheck disable=2034
-    SPACE_CMDENV="container flags=\${flags--i} cmd=\${cmd-}"
+    SPACE_ENV="container flags=\${flags--i} cmd=\${cmd-}"
     # shellcheck disable=2016
-    SPACE_CMDARGS='"${container}" "${flags}" "${cmd}" "${CMD}"'
+    SPACE_ARGS='"${container}" "${flags}" "${cmd}" "${CMD}"'
 }
 
 #=====================
@@ -231,7 +231,7 @@ DOCKER_EXEC_WRAP ()
 DOCKER_ENTER ()
 {
     SPACE_SIGNATURE="container [shell]"
-    SPACE_CMDDEP="PRINT"
+    SPACE_DEP="PRINT"
 
     local container="${1}"
     shift
