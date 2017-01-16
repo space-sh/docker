@@ -38,6 +38,7 @@ DOCKER_DEP_INSTALL ()
     SPACE_SIGNATURE="targetuser"
     SPACE_DEP="PRINT DOCKER_INSTALL"
 
+    # shellcheck disable=SC2039
     local targetuser="${1}"
     shift
 
@@ -48,6 +49,10 @@ DOCKER_DEP_INSTALL ()
 
     DOCKER_INSTALL "${targetuser}"
 }
+
+
+# Disable warning about local keyword
+# shellcheck disable=SC2039
 
 #======================
 # DOCKER_INSTALL
@@ -81,6 +86,10 @@ DOCKER_INSTALL ()
     OS_USER_ADD_GROUP "${targetuser}" "docker" &&
     OS_SERVICE "docker" "start"
 }
+
+
+# Disable warning about local keyword
+# shellcheck disable=SC2039
 
 #=====================
 # DOCKER_RUN
@@ -153,6 +162,10 @@ DOCKER_RUN_WRAP ()
     SPACE_ARGS='"${image}" "${container}" "${flags}" "${cmd-}" "${CMD}"'
 }
 
+
+# Disable warning about local keyword
+# shellcheck disable=SC2039
+
 #=====================
 # DOCKER_EXEC
 #
@@ -208,12 +221,18 @@ DOCKER_EXEC ()
 #=====================
 DOCKER_EXEC_WRAP ()
 {
+    # shellcheck disable=2034
     SPACE_FN="DOCKER_EXEC"
     # shellcheck disable=2034
     SPACE_ENV="container flags=\${flags--i} cmd=\${cmd-}"
+    # shellcheck disable=2034
     # shellcheck disable=2016
     SPACE_ARGS='"${container}" "${flags}" "${cmd}" "${CMD}"'
 }
+
+
+# Disable warning about local keyword
+# shellcheck disable=SC2039
 
 #=====================
 # DOCKER_ENTER
@@ -231,6 +250,7 @@ DOCKER_EXEC_WRAP ()
 DOCKER_ENTER ()
 {
     SPACE_SIGNATURE="container [shell]"
+    # shellcheck disable=2034
     SPACE_DEP="PRINT"
 
     local container="${1}"
@@ -259,6 +279,7 @@ DOCKER_LS_BY_STATUS ()
     # shellcheck disable=SC2034
     SPACE_SIGNATURE="status"
 
+    # shellcheck disable=SC2039
     local status="${1}"
     shift
 
@@ -290,11 +311,16 @@ DOCKER_RM_BY_STATUS ()
     # shellcheck disable=SC2034
     SPACE_SIGNATURE="status"
 
+    # shellcheck disable=SC2039
     local status="${1}"
     shift
 
     docker ps -a | grep "${status}" | awk '{print $1}' | xargs docker rm -f
 }
+
+
+# Disable warning about local keyword
+# shellcheck disable=SC2039
 
 #=============================
 # DOCKER_RM_BY_ID
@@ -332,3 +358,4 @@ DOCKER_PS ()
 {
     docker ps ${@:+"$@"}
 }
+
