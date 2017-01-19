@@ -74,7 +74,7 @@ DOCKER_INSTALL ()
 {
     SPACE_SIGNATURE="targetuser"
     SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
-    SPACE_ENV="SUDO=\${SUDO-}"
+    SPACE_ENV="SUDO=${SUDO-}"
 
     local targetuser="${1}"
     shift
@@ -157,9 +157,9 @@ DOCKER_RUN ()
 DOCKER_RUN_WRAP ()
 {
     SPACE_FN="DOCKER_RUN"
-    SPACE_ENV="image container=\${container-} flags cmd=\${cmd-}"
+    SPACE_ENV="image container=${container-} flags cmd=${cmd-}"
     # shellcheck disable=2016
-    SPACE_ARGS='"${image}" "${container}" "${flags}" "${cmd-}" "${CMD}"'
+    SPACE_ARGS='"${image}" "${container}" "${flags}" "${cmd-}" "${RUN}"'
 }
 
 
@@ -216,7 +216,7 @@ DOCKER_EXEC ()
 #   ${container}
 #   ${flags} (optional)
 #   ${cmd} (optional)
-#   ${CMD is the space function to be wrapped.}
+#   ${RUN is the space function to be wrapped.}
 #
 #=====================
 DOCKER_EXEC_WRAP ()
@@ -224,10 +224,10 @@ DOCKER_EXEC_WRAP ()
     # shellcheck disable=2034
     SPACE_FN="DOCKER_EXEC"
     # shellcheck disable=2034
-    SPACE_ENV="container flags=\${flags--i} cmd=\${cmd-}"
+    SPACE_ENV="container flags=${flags--i} cmd=${cmd-}"
     # shellcheck disable=2034
     # shellcheck disable=2016
-    SPACE_ARGS='"${container}" "${flags}" "${cmd}" "${CMD}"'
+    SPACE_ARGS='"${container}" "${flags}" "${cmd}" "${RUN}"'
 }
 
 
@@ -263,6 +263,17 @@ DOCKER_ENTER ()
 
     # shellcheck disable=2086
     docker exec -ti "${container}" ${shell}
+}
+
+#=============================
+# DOCKER_LS
+#
+# List all containers.
+#
+#=============================
+DOCKER_LS()
+{
+    docker ps -a
 }
 
 #=============================
@@ -358,4 +369,3 @@ DOCKER_PS ()
 {
     docker ps ${@:+"$@"}
 }
-

@@ -26,7 +26,7 @@ _dep_install:
             add the targetuser to the docker group.
     _env:
         - targetuser: ${targetuser:-${SSHUSER:-$USER}}
-        - CMD: DOCKER_DEP_INSTALL -- "${targetuser}"
+        - RUN: DOCKER_DEP_INSTALL -- "${targetuser}"
 
 install:
     _info:
@@ -37,40 +37,40 @@ install:
             Will reinstall if already installed.
     _env:
         - targetuser: ${targetuser:-${SSHUSER:-$USER}}
-        - CMD: DOCKER_INSTALL -- "${targetuser}"
+        - RUN: DOCKER_INSTALL -- "${targetuser}"
 
 run:
     _info:
         title: Run a container
     _env:
-        - CMD: DOCKER_RUN -- "${image-}" "${container-}" "${flags-}" "${cmd-}" "${args-}"
+        - RUN: DOCKER_RUN -- "${image-}" "${container-}" "${flags-}" "${cmd-}" "${args-}"
 
 ls_by_status:
     _info:
         title: List container(s) by their status
     _env:
         - status: ${status:-Up}
-        - CMD: DOCKER_LS_BY_STATUS -- "${status}"
+        - RUN: DOCKER_LS_BY_STATUS -- "${status}"
 
 rm_by_status:
     _info:
         title: Remove container(s) by their status
     _env:
         - status: ${status:-Exited}
-        - CMD: DOCKER_RM_BY_STATUS -- "${status}"
+        - RUN: DOCKER_RM_BY_STATUS -- "${status}"
 
 rm_by_id:
     _info:
         title: Remove container(s) by their id
     _env:
         - ids:
-        - CMD: DOCKER_RM_BY_ID -- "${ids}"
+        - RUN: DOCKER_RM_BY_ID -- "${ids}"
 
 rmi_all:
     _info:
         title: Remove all docker images
     _env:
-        - CMD: DOCKER_RMI_ALL
+        - RUN: DOCKER_RMI_ALL
 
 enter:
     _info:
@@ -78,19 +78,19 @@ enter:
     _env:
         - container: ${container-}
         - shell: ${shell-}
-        - CMD: DOCKER_ENTER -- "${container-}" "${shell-}"
+        - RUN: DOCKER_ENTER -- "${container-}" "${shell-}"
 
 ps:
     _info:
         title: List containers.
     _env:
-        - CMD: DOCKER_PS
+        - RUN: DOCKER_PS
 
 exec_wrap:
     _info:
         title: Exec a command inside an existing container
     _env:
-        - CMDWRAP: DOCKER_EXEC_WRAP
+        - SPACE_WRAP: DOCKER_EXEC_WRAP
 
 run_wrap:
     _info:
@@ -98,4 +98,4 @@ run_wrap:
     _env:
         - image: alpine
         - flags: "--rm -ti"
-        - CMDWRAP: DOCKER_RUN_WRAP
+        - SPACE_WRAP: DOCKER_RUN_WRAP
