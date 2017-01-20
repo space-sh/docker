@@ -139,7 +139,7 @@ DOCKER_RUN ()
     PRINT "Run image ${image} flags: ${flags}." "debug"
 
     # shellcheck disable=2086
-    docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} "${@}"
+    docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} "$@"
 }
 
 #=====================
@@ -204,7 +204,7 @@ DOCKER_EXEC ()
     PRINT "cmd: ${cmd}." "debug"
 
     # shellcheck disable=2086
-    docker exec ${flags} "${container}" ${cmd} "${@}"
+    docker exec ${flags} "${container}" ${cmd} "$@"
 }
 
 #=====================
