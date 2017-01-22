@@ -159,7 +159,7 @@ DOCKER_RUN_WRAP ()
     SPACE_FN="DOCKER_RUN"
     SPACE_ENV="image container=${container-} flags cmd"
     # shellcheck disable=2016
-    SPACE_ARGS='"${image}" "${container}" "${flags}" "${cmd-}" "${RUN}"'
+    SPACE_ARGS="\"\${image}\" \"\${container}\" \"\${flags}\" \"\${cmd-}\" \"\${RUN}\""
 }
 
 
