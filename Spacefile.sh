@@ -157,7 +157,7 @@ DOCKER_RUN ()
 DOCKER_RUN_WRAP ()
 {
     SPACE_FN="DOCKER_RUN"
-    SPACE_ENV="image container=${container-} flags cmd"
+    SPACE_ENV="image container=${container-} flags=\"${flags--i}\" cmd=\"${cmd-}\""
     # shellcheck disable=2016
     SPACE_ARGS="\"\${image}\" \"\${container}\" \"\${flags}\" \"\${cmd-}\" \"\${RUN}\""
 }
@@ -224,10 +224,10 @@ DOCKER_EXEC_WRAP ()
     # shellcheck disable=2034
     SPACE_FN="DOCKER_EXEC"
     # shellcheck disable=2034
-    SPACE_ENV="container flags=${flags--i} cmd=${cmd-}"
+    SPACE_ENV="container flags=\"${flags--i}\" cmd=\"${cmd-}\""
     # shellcheck disable=2034
     # shellcheck disable=2016
-    SPACE_ARGS='"${container}" "${flags}" "${cmd}" "${RUN}"'
+    SPACE_ARGS="\"\${container}\" \"\${flags}\" \"\${cmd}\" \"\${RUN}\""
 }
 
 
