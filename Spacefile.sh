@@ -82,7 +82,7 @@ DOCKER_INSTALL ()
     PRINT "Install Docker Engine.." "info"
     local SUDO="${SUDO-}"
     OS_IS_INSTALLED "curl" "curl"
-    ${SUDO} curl -sL https://get.docker.com/ | sh &&
+    curl -sL https://get.docker.com/ | ${SUDO} sh &&
     OS_USER_ADD_GROUP "${targetuser}" "docker" &&
     OS_SERVICE "docker" "start"
 }
