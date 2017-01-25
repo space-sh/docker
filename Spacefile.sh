@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 
-clone os
-
 #======================
 # DOCKER_DEP_INSTALL
 #
@@ -33,7 +31,7 @@ clone os
 #   1: failure
 #
 #======================
-DOCKER_DEP_INSTALL ()
+DOCKER_DEP_INSTALL()
 {
     SPACE_SIGNATURE="targetuser"
     SPACE_DEP="PRINT DOCKER_INSTALL"
@@ -70,7 +68,7 @@ DOCKER_DEP_INSTALL ()
 #   1: failure
 #
 #======================
-DOCKER_INSTALL ()
+DOCKER_INSTALL()
 {
     SPACE_SIGNATURE="targetuser"
     SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
@@ -107,7 +105,7 @@ DOCKER_INSTALL ()
 #   docker run status
 #
 #=====================
-DOCKER_RUN ()
+DOCKER_RUN()
 {
     SPACE_SIGNATURE="image [container flags cmd args]"
     SPACE_DEP="PRINT"
@@ -154,7 +152,7 @@ DOCKER_RUN ()
 #   ${cmd}
 #
 #=====================
-DOCKER_RUN_WRAP ()
+DOCKER_RUN_WRAP()
 {
     SPACE_FN="DOCKER_RUN"
     SPACE_ENV="image container=${container-} flags=\"${flags--i}\" cmd=\"${cmd-}\""
@@ -181,7 +179,7 @@ DOCKER_RUN_WRAP ()
 #   docker exec status
 #
 #=====================
-DOCKER_EXEC ()
+DOCKER_EXEC()
 {
     SPACE_SIGNATURE="container flags cmd [args]"
     SPACE_DEP="PRINT"
@@ -219,7 +217,7 @@ DOCKER_EXEC ()
 #   ${RUN is the space function to be wrapped.}
 #
 #=====================
-DOCKER_EXEC_WRAP ()
+DOCKER_EXEC_WRAP()
 {
     # shellcheck disable=2034
     SPACE_FN="DOCKER_EXEC"
@@ -247,7 +245,7 @@ DOCKER_EXEC_WRAP ()
 #   docker exec status
 #
 #=====================
-DOCKER_ENTER ()
+DOCKER_ENTER()
 {
     SPACE_SIGNATURE="container [shell]"
     # shellcheck disable=2034
@@ -285,7 +283,7 @@ DOCKER_LS()
 #   $1: status string, ex "Exited".
 #
 #=============================
-DOCKER_LS_BY_STATUS ()
+DOCKER_LS_BY_STATUS()
 {
     # shellcheck disable=SC2034
     SPACE_SIGNATURE="status"
@@ -317,7 +315,7 @@ DOCKER_RMI_ALL()
 #   $1: status string, ex "Exited".
 #
 #=============================
-DOCKER_RM_BY_STATUS ()
+DOCKER_RM_BY_STATUS()
 {
     # shellcheck disable=SC2034
     SPACE_SIGNATURE="status"
@@ -342,7 +340,7 @@ DOCKER_RM_BY_STATUS ()
 #   $1: IDs
 #
 #=============================
-DOCKER_RM_BY_ID ()
+DOCKER_RM_BY_ID()
 {
     # shellcheck disable=SC2034
     SPACE_SIGNATURE="ids"
@@ -365,7 +363,7 @@ DOCKER_RM_BY_ID ()
 #   $@: All arguments are passed on.
 #
 #=====================
-DOCKER_PS ()
+DOCKER_PS()
 {
     docker ps ${@:+"$@"}
 }

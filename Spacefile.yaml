@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+---
+@clone: os
 
 _info:
     title: Docker container management.
@@ -99,3 +101,4 @@ run_wrap:
         - image: alpine
         - flags: "--rm -ti"
         - SPACE_WRAP: DOCKER_RUN_WRAP
+...
