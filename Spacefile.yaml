@@ -98,7 +98,7 @@ run_wrap:
     _info:
         title: Exec a command inside a temporary container
     _env:
-        - image: alpine
-        - flags: "--rm -ti"
+        - image: ${image:-alpine}
+        - flags: ${flags---rm -ti}
         - SPACE_WRAP: DOCKER_RUN_WRAP
 ...
