@@ -15,6 +15,7 @@
 	Downloads and installs the latest Docker Engine from Docker.
 	Also adds the targetuser to the docker group.
 	Will reinstall if already installed.
+	
 
 
 ## /ls_by_status/
@@ -47,7 +48,7 @@
 
 # Functions 
 
-## DOCKER\_DEP\_INSTALL ()  
+## DOCKER\_DEP\_INSTALL()  
   
   
   
@@ -66,7 +67,7 @@ otherwise install it.
   
   
   
-## DOCKER\_INSTALL ()  
+## DOCKER\_INSTALL()  
   
   
   
@@ -84,7 +85,7 @@ Install latest Docker and make it available to the user.
   
   
   
-## DOCKER\_RUN ()  
+## DOCKER\_RUN()  
   
   
   
@@ -102,7 +103,7 @@ Create and start a container.
   
   
   
-## DOCKER\_RUN\_WRAP ()  
+## DOCKER\_RUN\_WRAP()  
   
   
   
@@ -116,7 +117,7 @@ Wrap a command to be run inside a newly created container.
   
   
   
-## DOCKER\_EXEC ()  
+## DOCKER\_EXEC()  
   
   
   
@@ -133,7 +134,7 @@ Exec command in existing docker container.
   
   
   
-## DOCKER\_EXEC\_WRAP ()  
+## DOCKER\_EXEC\_WRAP()  
   
   
   
@@ -143,11 +144,11 @@ Wrap another command to be run inside an existing container.
 - ${container}  
 - ${flags} (optional)  
 - ${cmd} (optional)  
-- ${CMD is the space function to be wrapped.}  
+- ${RUN is the space function to be wrapped.}  
   
   
   
-## DOCKER\_ENTER ()  
+## DOCKER\_ENTER()  
   
   
   
@@ -162,7 +163,15 @@ Start shell inside existing docker container.
   
   
   
-## DOCKER\_LS\_BY\_STATUS ()  
+## DOCKER\_LS()  
+  
+  
+  
+List all containers.  
+  
+  
+  
+## DOCKER\_LS\_BY\_STATUS()  
   
   
   
@@ -181,7 +190,7 @@ Remove all docker images.
   
   
   
-## DOCKER\_RM\_BY\_STATUS ()  
+## DOCKER\_RM\_BY\_STATUS()  
   
   
   
@@ -192,7 +201,7 @@ $1: status string, ex "Exited".
   
   
   
-## DOCKER\_RM\_BY\_ID ()  
+## DOCKER\_RM\_BY\_ID()  
   
   
   
@@ -203,7 +212,7 @@ $1: IDs
   
   
   
-## DOCKER\_PS ()  
+## DOCKER\_PS()  
   
   
   
