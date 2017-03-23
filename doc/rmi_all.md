@@ -1,13 +1,17 @@
 ---
+modulename: Docker
 title: /rmi_all/
 giturl: gitlab.com/space-sh/docker
 weight: 200
 ---
-# Docker module: rmi_all
+# Docker module: Remove all images
 
 Remove all Docker images, without any exception.
 
 ## Example
 
 ```sh
+space -m docker /rmi_all/
 ```
+
+Exit status code is expected to be 0 on success.
