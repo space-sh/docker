@@ -140,16 +140,16 @@ DOCKER_RUN()
         cmd="sh -c"
     fi
 
-    PRINT "Run image ${image} flags: ${flags}." "debug"
+    PRINT "run: ${flags} ${container:+--name ${container}} "${image}" ${cmd} ${*:+"$*"}." "debug"
 
     # shellcheck disable=2086
-    docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} "$*"
+    docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} ${*:+"$*"}
 }
 
 #=====================
 # DOCKER_RUN_WRAP
 #
-# Wrap a command to be run inside a newly created container.
+# Wrap a command to be run inside a new container.
 #
 # Expects:
 #   ${image}

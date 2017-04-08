@@ -15,6 +15,7 @@
 #
 ---
 @clone: os
+@include: os|/_clone/
 
 _info:
     title: Docker container management.
@@ -27,7 +28,8 @@ _dep_install:
             download and install the latest Docker Engine from Docker and
             add the targetuser to the docker group.
     _env:
-        - targetuser: ${targetuser:-${SSHUSER:-$USER}}
+        - targetuser:
+            value: ${targetuser:-${SSHUSER:-$USER}}
         - RUN: DOCKER_DEP_INSTALL -- "${targetuser}"
 
 install:
@@ -38,35 +40,115 @@ install:
             Also adds the targetuser to the docker group.
             Will reinstall if already installed.
     _env:
-        - targetuser: ${targetuser:-${SSHUSER:-$USER}}
+        - targetuser:
+            value: ${targetuser:-${SSHUSER:-$USER}}
+        - SPACE_ARGS:
+            arguments:
+                -
+                    values:
+                        - targetuser
         - RUN: DOCKER_INSTALL -- "${targetuser}"
 
 run:
     _info:
         title: Run a container
     _env:
+        - image:
+            title: Docker Image
+        - container:
+            title: Optional name to give container
+        - flags:
+            title: Optional flags
+        - cmd:
+            title: Command to run, defaults to "sh -c" if empty and arguments are given.
+        - args:
+            title: Arguments to pass to shell, leave blank for interactive shell.
+        - SPACE_ARGS:
+            arguments:
+                -
+                    values:
+                        - alpine
+                        - debian
+                        - ubuntu
+                -
+                    values:
+                        - mycontainer
+                -
+                    values:
+                        - "-ti"
+                -
+                    values:
+                        - cmd
+                -
+                    values:
+                        - arguments
         - RUN: DOCKER_RUN -- "${image-}" "${container-}" "${flags-}" "${cmd-}" "${args-}"
 
 ls_by_status:
     _info:
         title: List container(s) by their status
     _env:
-        - status: ${status:-Up}
+        - status:
+            value: ${status:-Up}
+            values:
+                - Up
+                - Exited
+                - Created
+        - SPACE_ARGS:
+            arguments:
+                -
+                    values:
+                        - Up
+                        - Exited
+                        - Created
         - RUN: DOCKER_LS_BY_STATUS -- "${status}"
 
 rm_by_status:
     _info:
         title: Remove container(s) by their status
     _env:
-        - status: ${status:-Exited}
+        - status:
+            value: ${status:-Exited}
+            values:
+                - Up
+                - Exited
+                - Created
+        - SPACE_ARGS:
+            arguments:
+                -
+                    values:
+                        - Up
+                        - Exited
+                        - Created
         - RUN: DOCKER_RM_BY_STATUS -- "${status}"
 
 rm_by_id:
+    @prefix: @{PARENTPATH}
+    @dotdot: prefix
     _info:
         title: Remove container(s) by their id
     _env:
         - ids:
+            completion: @{prefix}_list_ids/
+        - SPACE_ARGS:
+            arguments:
+                -
+                    completion: @{prefix}_list_ids/
         - RUN: DOCKER_RM_BY_ID -- "${ids}"
+
+rm_by_name:
+    @prefix: @{PARENTPATH}
+    @dotdot: prefix
+    _info:
+        title: Remove container(s) by their name
+    _env:
+        - names:
+            completion: @{prefix}_list_names/
+        - SPACE_ARGS:
+            arguments:
+                -
+                    completion: @{prefix}_list_names/
+        - RUN: DOCKER_RM_BY_ID -- "${names}"
 
 rmi_all:
     _info:
@@ -78,8 +160,20 @@ enter:
     _info:
         title: Enter a running container.
     _env:
-        - container: ${container-}
-        - shell: ${shell-}
+        - container:
+            completion: @{prefix}_list_names_running/
+        - shell:
+            values:
+                - sh
+                - bash
+        - SPACE_ARGS:
+            arguments:
+                -
+                    completion: @{prefix}_list_names_running/
+                -
+                    values:
+                        - sh
+                        - bash
         - RUN: DOCKER_ENTER -- "${container-}" "${shell-}"
 
 ps:
@@ -92,13 +186,40 @@ exec_wrap:
     _info:
         title: Exec a command inside an existing container
     _env:
+        - flags:
+            value: ${flags--ti}
+        - container:
+            completion: @{prefix}_list_names_running/
+        - cmd:
+            desc: Command to execute inside container which will execute the RUN variable, leave blank for default.
         - SPACE_WRAP: DOCKER_EXEC_WRAP
 
 run_wrap:
     _info:
         title: Exec a command inside a temporary container
     _env:
-        - image: ${image:-alpine}
-        - flags: ${flags---rm -ti}
+        - image:
+            value: ${image:-alpine}
+        - flags:
+            value: ${flags---rm -ti}
+        - container:
+            desc: The name to give the new continer, optional.
+        - cmd:
+            desc: Command to execute inside container which will execute the RUN variable, leave blank for default.
         - SPACE_WRAP: DOCKER_RUN_WRAP
+
+_list_ids:
+    @include: |/ps/
+    _env:
+        - SPACE_ARGS: -a -q -|
+
+_list_names:
+    @include: |/ps/
+    _env:
+        - SPACE_ARGS: -a --format="{{.Names}}" -|
+
+_list_names_running:
+    @include: |/ps/
+    _env:
+        - SPACE_ARGS: --format="{{.Names}}" -|
 ...
