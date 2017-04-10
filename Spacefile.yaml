@@ -227,4 +227,6 @@ _list_names_running:
     @include: |/ps/
     _env:
         - SPACE_ARGS: --format="{{.Names}}" -|
+        - SPACE_REDIR: "2>/dev/null"
+        - SPACE_SILENT: 1
 ...
