@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 ---
-@clone: os
-@include: os|/_clone/
+_clone:
+    @clone: os
+@include: |/_clone/
 
 _info:
     title: Docker container management.
@@ -157,6 +158,8 @@ rmi_all:
         - RUN: DOCKER_RMI_ALL
 
 enter:
+    @prefix: @{PARENTPATH}
+    @dotdot: prefix
     _info:
         title: Enter a running container.
     _env:
@@ -183,6 +186,8 @@ ps:
         - RUN: DOCKER_PS
 
 exec_wrap:
+    @prefix: @{PARENTPATH}
+    @dotdot: prefix
     _info:
         title: Exec a command inside an existing container
     _env:
