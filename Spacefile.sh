@@ -349,13 +349,10 @@ DOCKER_RM_BY_STATUS()
 DOCKER_RM_BY_ID()
 {
     # shellcheck disable=SC2034
-    SPACE_SIGNATURE="ids"
-
-    local ids="${1}"
-    shift
+    SPACE_SIGNATURE="id [id]"
 
     local id=
-    for id in ${ids}; do
+    for id in "$@"; do
         docker rm -f "${id}"
     done
 }

@@ -129,13 +129,13 @@ rm_by_id:
     _info:
         title: Remove container(s) by their id
     _env:
-        - ids:
+        - container:
             completion: @{prefix}_list_ids/
         - SPACE_ARGS:
             arguments:
                 -
                     completion: @{prefix}_list_ids/
-        - RUN: DOCKER_RM_BY_ID -- "${ids}"
+        - RUN: DOCKER_RM_BY_ID -- ${container}
 
 rm_by_name:
     @prefix: @{PARENTPATH}
@@ -143,13 +143,13 @@ rm_by_name:
     _info:
         title: Remove container(s) by their name
     _env:
-        - names:
+        - container:
             completion: @{prefix}_list_names/
         - SPACE_ARGS:
             arguments:
                 -
                     completion: @{prefix}_list_names/
-        - RUN: DOCKER_RM_BY_ID -- "${names}"
+        - RUN: DOCKER_RM_BY_ID -- ${container}
 
 rmi_all:
     _info:
@@ -217,11 +217,17 @@ _list_ids:
     @include: |/ps/
     _env:
         - SPACE_ARGS: -a -q -|
+        - SPACE_REDIR: "2>/dev/null"
+        - SPACE_MUTE_EXIT: 1
+        - SPACE_LOG_LEVEL: 0
 
 _list_names:
     @include: |/ps/
     _env:
         - SPACE_ARGS: -a --format="{{.Names}}" -|
+        - SPACE_REDIR: "2>/dev/null"
+        - SPACE_MUTE_EXIT: 1
+        - SPACE_LOG_LEVEL: 0
 
 _list_names_running:
     @include: |/ps/
