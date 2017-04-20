@@ -33,7 +33,7 @@
 #======================
 DOCKER_DEP_INSTALL()
 {
-    SPACE_SIGNATURE="targetuser"
+    SPACE_SIGNATURE="targetuser:1"
     SPACE_DEP="PRINT DOCKER_INSTALL"
 
     # shellcheck disable=SC2039
@@ -70,7 +70,7 @@ DOCKER_DEP_INSTALL()
 #======================
 DOCKER_INSTALL()
 {
-    SPACE_SIGNATURE="targetuser"
+    SPACE_SIGNATURE="targetuser:1"
     SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
     SPACE_ENV="SUDO=${SUDO-}"
 
@@ -113,7 +113,7 @@ DOCKER_INSTALL()
 #=====================
 DOCKER_RUN()
 {
-    SPACE_SIGNATURE="image [container flags cmd args]"
+    SPACE_SIGNATURE="image:1 [container flags cmd args]"
     SPACE_DEP="PRINT"
 
     local image="${1}"
@@ -147,23 +147,22 @@ DOCKER_RUN()
 }
 
 #=====================
-# DOCKER_RUN_WRAP
+# DOCKER_WRAP_RUN
 #
 # Wrap a command to be run inside a new container.
 #
 # Expects:
-#   ${image}
-#   ${container} (optional)
-#   ${flags}
-#   ${cmd}
+#   ${DOCKERIMAGE}
+#   ${DOCKERCONTAINER} (optional)
+#   ${DOCKERFLAGS}
+#   ${DOCKERCMD}
 #
 #=====================
-DOCKER_RUN_WRAP()
+DOCKER_WRAP_RUN()
 {
     SPACE_FN="DOCKER_RUN"
-    SPACE_ENV="image container=${container-} flags=\"${flags--i}\" cmd=\"${cmd-}\""
     # shellcheck disable=2016
-    SPACE_ARGS="\"\${image}\" \"\${container}\" \"\${flags}\" \"\${cmd-}\" \"\${RUN}\""
+    SPACE_ARGS="\"${DOCKERIMAGE}\" \"${DOCKERCONTAINER}\" \"${DOCKERFLAGS}\" \"${DOCKERCMD-}\" \"\${RUN}\""
 }
 
 
@@ -187,7 +186,7 @@ DOCKER_RUN_WRAP()
 #=====================
 DOCKER_EXEC()
 {
-    SPACE_SIGNATURE="container flags cmd [args]"
+    SPACE_SIGNATURE="container:1 flags cmd [args]"
     SPACE_DEP="PRINT"
 
     local container="${1}"
@@ -212,26 +211,24 @@ DOCKER_EXEC()
 }
 
 #=====================
-# DOCKER_EXEC_WRAP
+# DOCKER_WRAP_EXEC
 #
 # Wrap another command to be run inside an existing container.
 #
 # Expects:
-#   ${container}
-#   ${flags} (optional)
-#   ${cmd} (optional)
+#   ${DOCKERCONTAINER}
+#   ${DOCKERFLAGS} (optional)
+#   ${DOCKERCMD} (optional)
 #   ${RUN is the space function to be wrapped.}
 #
 #=====================
-DOCKER_EXEC_WRAP()
+DOCKER_WRAP_EXEC()
 {
     # shellcheck disable=2034
     SPACE_FN="DOCKER_EXEC"
     # shellcheck disable=2034
-    SPACE_ENV="container flags=\"${flags--i}\" cmd=\"${cmd-}\""
-    # shellcheck disable=2034
     # shellcheck disable=2016
-    SPACE_ARGS="\"\${container}\" \"\${flags}\" \"\${cmd}\" \"\${RUN}\""
+    SPACE_ARGS="\"${DOCKERCONTAINER}\" \"${DOCKERFLAGS}\" \"${DOCKERCMD}\" \"\${RUN}\""
 }
 
 
@@ -253,7 +250,7 @@ DOCKER_EXEC_WRAP()
 #=====================
 DOCKER_ENTER()
 {
-    SPACE_SIGNATURE="container [shell]"
+    SPACE_SIGNATURE="container:1 [shell]"
     # shellcheck disable=2034
     SPACE_DEP="PRINT"
 
@@ -292,7 +289,7 @@ DOCKER_LS()
 DOCKER_LS_BY_STATUS()
 {
     # shellcheck disable=SC2034
-    SPACE_SIGNATURE="status"
+    SPACE_SIGNATURE="status:1"
 
     # shellcheck disable=SC2039
     local status="${1}"
@@ -324,7 +321,7 @@ DOCKER_RMI_ALL()
 DOCKER_RM_BY_STATUS()
 {
     # shellcheck disable=SC2034
-    SPACE_SIGNATURE="status"
+    SPACE_SIGNATURE="status:1"
 
     # shellcheck disable=SC2039
     local status="${1}"
@@ -349,7 +346,7 @@ DOCKER_RM_BY_STATUS()
 DOCKER_RM_BY_ID()
 {
     # shellcheck disable=SC2034
-    SPACE_SIGNATURE="id [id]"
+    SPACE_SIGNATURE="id:1 [id]"
 
     local id=
     for id in "$@"; do

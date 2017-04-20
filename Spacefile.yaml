@@ -16,6 +16,7 @@
 ---
 _clone:
     @clone: os
+    @include: os|/_clone/
 @include: |/_clone/
 
 _info:
@@ -30,7 +31,7 @@ _dep_install:
             add the targetuser to the docker group.
     _env:
         - targetuser:
-            value: ${targetuser:-${SSHUSER:-$USER}}
+            value: ${targetuser:-$USER}
         - RUN: DOCKER_DEP_INSTALL -- "${targetuser}"
 
 install:
@@ -42,7 +43,7 @@ install:
             Will reinstall if already installed.
     _env:
         - targetuser:
-            value: ${targetuser:-${SSHUSER:-$USER}}
+            value: ${targetuser:-$USER}
         - SPACE_ARGS:
             arguments:
                 -
@@ -65,7 +66,7 @@ run:
         - flags:
             title: Optional flags
         - cmd:
-            title: Command to run, defaults to "sh -c" if empty and arguments are given.
+            title: Command to run, defaults to "sh -c" if empty but arguments are given.
         - args:
             title: Arguments to pass to shell, leave blank for interactive shell.
         - SPACE_ARGS:
@@ -87,7 +88,7 @@ run:
                 -
                     values:
                         - arguments
-        - RUN: DOCKER_RUN -- "${image-}" "${container-}" "${flags-}" "${cmd-}" "${args-}"
+        - RUN: DOCKER_RUN -- "${image}" "${container}" "${flags}" "${cmd}" "${args}"
 
 ls_by_status:
     _info:
@@ -181,7 +182,7 @@ enter:
                     values:
                         - sh
                         - bash
-        - RUN: DOCKER_ENTER -- "${container-}" "${shell-}"
+        - RUN: DOCKER_ENTER -- "${container}" "${shell}"
 
 ps:
     _info:
@@ -189,33 +190,38 @@ ps:
     _env:
         - RUN: DOCKER_PS
 
-exec_wrap:
+wrap_exec:
     @prefix: @{PARENTPATH}
     @dotdot: prefix
     _info:
         title: Exec a command inside an existing container
     _env:
-        - flags:
-            value: ${flags--ti}
-        - container:
+        - DOCKERFLAGS:
+            value: ${DOCKERFLAGS--ti}
+        - DOCKERCONTAINER:
             completion: @{prefix}_list_names_running/
-        - cmd:
+        - DOCKERCMD:
             desc: Command to execute inside container which will execute the RUN variable, leave blank for default.
-        - SPACE_WRAP: DOCKER_EXEC_WRAP
+        - SPACE_WRAP: DOCKER_WRAP_EXEC
 
-run_wrap:
+wrap_run:
     _info:
         title: Exec a command inside a temporary container
     _env:
-        - image:
-            value: ${image:-alpine}
-        - flags:
-            value: ${flags---rm -ti}
-        - container:
+        - DOCKERIMAGE:
+            value: ${DOCKERIMAGE:-alpine}
+            values:
+                - alpine
+                - debian
+                - ubuntu
+                - centos
+        - DOCKERFLAGS:
+            value: ${DOCKERFLAGS---rm -ti}
+        - DOCKERCONTAINER:
             desc: The name to give the new continer, optional.
-        - cmd:
+        - DOCKERCMD:
             desc: Command to execute inside container which will execute the RUN variable, leave blank for default.
-        - SPACE_WRAP: DOCKER_RUN_WRAP
+        - SPACE_WRAP: DOCKER_WRAP_RUN
 
 _list_ids:
     @include: |/ps/
