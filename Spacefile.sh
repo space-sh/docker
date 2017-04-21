@@ -186,7 +186,7 @@ DOCKER_WRAP_RUN()
 #=====================
 DOCKER_EXEC()
 {
-    SPACE_SIGNATURE="container:1 flags cmd [args]"
+    SPACE_SIGNATURE="container:1 flags cmd:0 args"
     SPACE_DEP="PRINT"
 
     local container="${1}"
