@@ -218,7 +218,7 @@ wrap_run:
         - DOCKERFLAGS:
             value: ${DOCKERFLAGS---rm -ti}
         - DOCKERCONTAINER:
-            desc: The name to give the new continer, optional.
+            desc: The name to give the new container, optional.
         - DOCKERCMD:
             desc: Command to execute inside container which will execute the RUN variable, leave blank for default.
         - SPACE_WRAP: DOCKER_WRAP_RUN
