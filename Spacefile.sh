@@ -72,6 +72,7 @@ DOCKER_INSTALL()
 {
     SPACE_SIGNATURE="targetuser:1"
     SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
+    # shellcheck disable=2034
     SPACE_ENV="SUDO=${SUDO-}"
 
     local targetuser="${1}"
