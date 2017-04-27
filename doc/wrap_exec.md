@@ -1,6 +1,6 @@
 ---
 modulename: Docker
-title: /exec_wrap/
+title: /wrap_exec/
 giturl: gitlab.com/space-sh/docker
 weight: 200
 ---
@@ -12,7 +12,7 @@ Execute a command inside an existing container.
 
 Run node named `/info/` from _OS_ module inside an existing container named `space_container`:
 ```sh
-space -m os /info/ -m docker /exec_wrap/ -econtainer=space_container
+space -m os /info/ -m docker /wrap_exec/ -econtainer=space_container
 ```
 
 Output:

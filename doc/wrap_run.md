@@ -1,10 +1,10 @@
 ---
 modulename: Docker
-title: /run_wrap/
+title: /wrap_run/
 giturl: gitlab.com/space-sh/docker
 weight: 200
 ---
-# Docker module: run_wrap
+# Docker module: Run wrap
 
 Execute a command inside a disposable container.
 
@@ -12,5 +12,5 @@ Execute a command inside a disposable container.
 
 Run node named `/info/` from _OS_ module in a newly created _Debian_ container:
 ```sh
-space -m os /info/ -m docker /run_wrap/ -eimage=debian
+space -m os /info/ -m docker /wrap_run/ -eimage=debian
 ```
