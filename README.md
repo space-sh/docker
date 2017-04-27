@@ -5,10 +5,6 @@
 	Enter a running container.
 
 
-## /exec_wrap/
-	Exec a command inside an existing container
-
-
 ## /install/
 	Install the latest Docker Engine.
 
@@ -30,6 +26,10 @@
 	Remove container(s) by their id
 
 
+## /rm_by_name/
+	Remove container(s) by their name
+
+
 ## /rm_by_status/
 	Remove container(s) by their status
 
@@ -42,7 +42,11 @@
 	Run a container
 
 
-## /run_wrap/
+## /wrap_exec/
+	Exec a command inside an existing container
+
+
+## /wrap_run/
 	Exec a command inside a temporary container
 
 
@@ -103,17 +107,17 @@ Create and start a container.
   
   
   
-## DOCKER\_RUN\_WRAP()  
+## DOCKER\_WRAP\_RUN()  
   
   
   
-Wrap a command to be run inside a newly created container.  
+Wrap a command to be run inside a new container.  
   
 ### Expects:  
-- ${image}  
-- ${container} (optional)  
-- ${flags}  
-- ${cmd}  
+- ${DOCKERIMAGE}  
+- ${DOCKERCONTAINER} (optional)  
+- ${DOCKERFLAGS}  
+- ${DOCKERCMD}  
   
   
   
@@ -134,16 +138,16 @@ Exec command in existing docker container.
   
   
   
-## DOCKER\_EXEC\_WRAP()  
+## DOCKER\_WRAP\_EXEC()  
   
   
   
 Wrap another command to be run inside an existing container.  
   
 ### Expects:  
-- ${container}  
-- ${flags} (optional)  
-- ${cmd} (optional)  
+- ${DOCKERCONTAINER}  
+- ${DOCKERFLAGS} (optional)  
+- ${DOCKERCMD} (optional)  
 - ${RUN is the space function to be wrapped.}  
   
   
