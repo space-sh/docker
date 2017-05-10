@@ -23,9 +23,6 @@
 # Parameters:
 #   $1: user to add to docker group.
 #
-# Expects:
-#   ${SUDO}: set to "sudo" to run as sudo.
-#
 # Returns:
 #   0: success
 #   1: failure
@@ -60,9 +57,6 @@ DOCKER_DEP_INSTALL()
 # Parameters:
 #   $1: user to add to docker group.
 #
-# Expects:
-#   ${SUDO}: set to "sudo" to run as sudo.
-#
 # Returns:
 #   0: success
 #   1: failure
@@ -72,21 +66,18 @@ DOCKER_INSTALL()
 {
     SPACE_SIGNATURE="targetuser:1"
     SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
-    # shellcheck disable=2034
-    SPACE_ENV="SUDO=${SUDO-}"
 
     local targetuser="${1}"
     shift
 
     PRINT "Install Docker Engine.." "info"
 
-    local SUDO="${SUDO-}"
     if OS_INSTALL_PKG "docker"; then
         OS_USER_ADD_GROUP "${targetuser}" "docker" &&
         OS_SERVICE "docker" "start"
     else
         OS_IS_INSTALLED "curl" "curl"
-        curl -sL https://get.docker.com/ | ${SUDO} sh &&
+        curl -sL https://get.docker.com/ | sh &&
         OS_USER_ADD_GROUP "${targetuser}" "docker" &&
         OS_SERVICE "docker" "start"
     fi
