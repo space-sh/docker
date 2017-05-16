@@ -1,5 +1,12 @@
 # Space Module change log - docker
 
+## [1.0.2 - 2017-05-16]
+
+- Remove old `SUDO` behavior
+
+- Remove unwanted surrounding quotes in `DOCKER_RUN` command
+
+
 ## [1.0.1 - 2017-04-26]
 
 * Update auto completion
