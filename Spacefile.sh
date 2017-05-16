@@ -132,7 +132,7 @@ DOCKER_RUN()
         cmd="sh -c"
     fi
 
-    PRINT "run: ${flags} ${container:+--name ${container}} "${image}" ${cmd} ${*:+"$*"}." "debug"
+    PRINT "run: ${flags} ${container:+--name ${container}} ${image} ${cmd} ${*:+"$*"}." "debug"
 
     # shellcheck disable=2086
     docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} ${*:+"$*"}
