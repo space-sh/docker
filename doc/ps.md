@@ -2,6 +2,7 @@
 modulename: Docker
 title: /ps/
 giturl: gitlab.com/space-sh/docker
+editurl: /edit/master/doc/ps.md
 weight: 200
 ---
 # Docker module: Ps

@@ -2,6 +2,7 @@
 modulename: Docker
 title: Examples
 giturl: gitlab.com/space-sh/docker
+editurl: /edit/master/doc/examples.md
 weight: 200
 ---
 # Docker Module

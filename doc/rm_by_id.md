@@ -2,6 +2,7 @@
 modulename: Docker
 title: /rm_by_id/
 giturl: gitlab.com/space-sh/docker
+editurl: /edit/master/doc/rm_by_id.md
 weight: 200
 ---
 # Docker module: Remove by ID

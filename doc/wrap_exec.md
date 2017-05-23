@@ -2,6 +2,7 @@
 modulename: Docker
 title: /wrap_exec/
 giturl: gitlab.com/space-sh/docker
+editurl: /edit/master/doc/wrap_exec.md
 weight: 200
 ---
 # Docker module: Execute wrap
