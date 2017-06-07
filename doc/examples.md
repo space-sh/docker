@@ -7,8 +7,8 @@ weight: 200
 ---
 # Docker Module
 
-The SpaceGal Docker module is an interface to the Docker Engine command line tool.  
-By having an interface to the Docker engine we can apply the SpaceGal Shell power to it.  
+The Space.sh Docker module is an interface to the Docker Engine command line tool.  
+By having an interface to the Docker engine we can apply the Space.sh Shell power to it.  
 
 ## Simple usage
 
