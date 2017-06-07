@@ -8,7 +8,7 @@ weight: 200
 # Docker Module
 
 The Space.sh Docker module is an interface to the Docker Engine command line tool.  
-By having an interface to the Docker engine we can apply the Space.sh Shell power to it.  
+By having an interface to the Docker engine we can apply the Space.sh power to it.  
 
 ## Simple usage
 
