@@ -202,7 +202,9 @@ ps:
     _info:
         title: List containers.
     _env:
-        - RUN: DOCKER_PS
+        - flags:
+            title: Optional flags
+        - RUN: DOCKER_PS -- "${flags}"
 
 wrap_exec:
     @prefix: @{PARENTPATH}
