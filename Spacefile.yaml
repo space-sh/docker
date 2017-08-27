@@ -109,6 +109,20 @@ ls_by_status:
                         - Created
         - RUN: DOCKER_LS_BY_STATUS -- "${status}"
 
+logs:
+    @prefix: @{PARENTPATH}
+    @dotdot: prefix
+    _info:
+        title: Get container logs
+    _env:
+        - container:
+            completion: @{prefix}_list_names/
+        - SPACE_ARGS:
+            arguments:
+                -
+                    completion: @{prefix}_list_names/
+        - RUN: DOCKER_LOGS -- ${container}
+
 rm_by_status:
     _info:
         title: Remove container(s) by their status

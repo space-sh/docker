@@ -300,6 +300,23 @@ DOCKER_LS_BY_STATUS()
 }
 
 #=============================
+# DOCKER_LOGS
+#
+# Get container logs
+#
+# Parameters;
+#   $1: container name(s)
+#
+#=============================
+DOCKER_LOGS()
+{
+    # shellcheck disable=SC2034
+    SPACE_SIGNATURE="containers:1"
+
+    docker logs ${@:+"$@"}
+}
+
+#=============================
 # DOCKER_RMI_ALL
 #
 # Remove all docker images.
