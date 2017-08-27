@@ -125,7 +125,7 @@ DOCKER_RUN()
     local cmd="${1-}"
     shift $(( $# > 0 ? 1 : 0 ))
 
-    local args="${1-}"
+    local args="$*"
 
     if [ -z "${image}" ]; then
         PRINT "Missing args: image [container flags cmd args]" "error"
@@ -137,10 +137,11 @@ DOCKER_RUN()
         cmd="sh -c"
     fi
 
-    PRINT "run: ${flags} ${container:+--name ${container}} ${image} ${cmd} ${*:+"$*"}." "debug"
+    PRINT "docker run ${flags} ${container:+--name ${container}} ${image} ${cmd} ${args:+"'$args'"}." "debug"
 
+    # We need to use eval here so that ${flags} are parsed correctly.
     # shellcheck disable=2086
-    docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} ${*:+"$*"}
+    eval docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} ${args:+"\"\$args\""}
 }
 
 #=====================
@@ -183,7 +184,7 @@ DOCKER_WRAP_RUN()
 #=====================
 DOCKER_EXEC()
 {
-    SPACE_SIGNATURE="container:1 flags cmd:0 args"
+    SPACE_SIGNATURE="container:1 flags cmd:0 [args]"
     SPACE_DEP="PRINT"
 
     local container="${1}"
@@ -195,6 +196,8 @@ DOCKER_EXEC()
     local cmd="${1}"
     shift
 
+    local args="$*"
+
     if [ "${cmd}" = "" ]; then
         PRINT "Setting default cmd: sh -c." "debug"
         cmd="sh -c"
@@ -203,8 +206,9 @@ DOCKER_EXEC()
     PRINT "Exec in ${container}." "debug"
     PRINT "cmd: ${cmd}." "debug"
 
+    # We need to use eval here so that ${flags} are parsed correctly.
     # shellcheck disable=2086
-    docker exec ${flags} "${container}" ${cmd} "$*"
+    eval docker exec ${flags} ${container} ${cmd} "\"\$args\""
 }
 
 #=====================
