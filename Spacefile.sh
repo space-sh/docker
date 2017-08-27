@@ -65,7 +65,7 @@ DOCKER_DEP_INSTALL()
 DOCKER_INSTALL()
 {
     SPACE_SIGNATURE="targetuser:1"
-    SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE"
+    SPACE_DEP="PRINT OS_IS_INSTALLED OS_USER_ADD_GROUP OS_SERVICE OS_GROUP_EXIST"
 
     local targetuser="${1}"
     shift
@@ -73,13 +73,18 @@ DOCKER_INSTALL()
     PRINT "Install Docker Engine.." "info"
 
     if OS_INSTALL_PKG "docker"; then
-        OS_USER_ADD_GROUP "${targetuser}" "docker" &&
+        if [ "${targetuser}" != "root" ] && OS_GROUP_EXIST "docker"; then
+            OS_USER_ADD_GROUP "${targetuser}" "docker"
+        fi
         OS_SERVICE "docker" "start"
     else
         OS_IS_INSTALLED "curl" "curl"
         curl -sL https://get.docker.com/ | sh &&
-        OS_USER_ADD_GROUP "${targetuser}" "docker" &&
+        if [ "${targetuser}" != "root" ] && OS_GROUP_EXIST "docker"; then
+            OS_USER_ADD_GROUP "${targetuser}" "docker"
+        fi
         OS_SERVICE "docker" "start"
+        OS_SERVICE "docker" "enable"
     fi
 }
 
