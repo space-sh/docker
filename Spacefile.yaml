@@ -170,6 +170,12 @@ rm_by_name:
                     completion: @{prefix}_list_names/
         - RUN: DOCKER_RM_BY_ID -- ${container}
 
+rm_all:
+    _info:
+        title: Remove all docker containers
+    _env:
+        - RUN: DOCKER_RM_ALL
+
 rmi_all:
     _info:
         title: Remove all docker images

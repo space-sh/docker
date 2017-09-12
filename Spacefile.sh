@@ -356,6 +356,16 @@ DOCKER_RM_BY_STATUS()
     docker ps -a | grep "${status}" | awk '{print $1}' | xargs docker rm -f
 }
 
+#=============================
+# DOCKER_RM_ALL
+#
+# Remove all containers
+#
+#=============================
+DOCKER_RM_ALL()
+{
+    docker ps -a -q | xargs docker rm -f
+}
 
 # Disable warning about local keyword
 # shellcheck disable=SC2039
