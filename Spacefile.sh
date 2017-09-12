@@ -137,6 +137,10 @@ DOCKER_RUN()
         cmd="sh -c"
     fi
 
+    if [ -t 0 ] && [ -t 1 ]; then
+        flags="${flags} -t"
+    fi
+
     PRINT "docker run ${flags} ${container:+--name ${container}} ${image} ${cmd} ${args:+"'$args'"}." "debug"
 
     # We need to use eval here so that ${flags} are parsed correctly.
@@ -201,6 +205,10 @@ DOCKER_EXEC()
     if [ "${cmd}" = "" ]; then
         PRINT "Setting default cmd: sh -c." "debug"
         cmd="sh -c"
+    fi
+
+    if [ -t 0 ] && [ -t 1 ]; then
+        flags="${flags} -t"
     fi
 
     PRINT "Exec in ${container}." "debug"

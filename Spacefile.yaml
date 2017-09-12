@@ -213,7 +213,7 @@ wrap_exec:
         title: Exec a command inside an existing container
     _env:
         - DOCKERFLAGS:
-            value: ${DOCKERFLAGS--ti}
+            value: ${DOCKERFLAGS--i}
         - DOCKERCONTAINER:
             completion: @{prefix}_list_names_running/
         - DOCKERCMD:
@@ -232,7 +232,7 @@ wrap_run:
                 - ubuntu
                 - centos
         - DOCKERFLAGS:
-            value: ${DOCKERFLAGS---rm -ti}
+            value: ${DOCKERFLAGS---rm -i}
         - DOCKERCONTAINER:
             desc: The name to give the new container, optional.
         - DOCKERCMD:
