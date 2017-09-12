@@ -1,5 +1,18 @@
 # Space Module change log - docker
 
+## [1.1.0 - 2017-08-28]
+
++ Add `logs` operation
+
++ Add optional flags support for `ps` operation
+
+* Fix bugs in dependencies install for non-root accounts when docker group already exists
+
+* Change `run` operation to consider multiple arguments as parameters
+
+* Change `exec` operation to consider multiple arguments as parameters
+
+
 ## [1.0.3 - 2017-06-11]
 
 * Update documentation
