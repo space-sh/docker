@@ -1,5 +1,12 @@
 # Space Module change log - docker
 
+## [1.2.0 - 2017-09-30]
+
++ Add support for adding `-t` terminal option automatically
+
++ Add `/rm_all/`
+
+
 ## [1.1.0 - 2017-08-28]
 
 + Add `logs` operation
