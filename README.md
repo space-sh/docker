@@ -14,12 +14,20 @@
 	
 
 
+## /logs/
+	Get container logs
+
+
 ## /ls_by_status/
 	List container(s) by their status
 
 
 ## /ps/
 	List containers.
+
+
+## /rm_all/
+	Remove all docker containers
 
 
 ## /rm_by_id/
@@ -180,6 +188,17 @@ $1: status string, ex "Exited".
   
   
   
+## DOCKER\_LOGS()  
+  
+  
+  
+Get container logs  
+  
+Parameters;  
+$1: container name(s)  
+  
+  
+  
 ## DOCKER\_RMI\_ALL()  
   
   
@@ -196,6 +215,14 @@ Remove all containers filtered by their status.
   
 Parameters;  
 $1: status string, ex "Exited".  
+  
+  
+  
+## DOCKER\_RM\_ALL()  
+  
+  
+  
+Remove all containers  
   
   
   
