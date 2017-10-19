@@ -1,5 +1,10 @@
 # Space Module change log - docker
 
+## [1.2.1 - 2017-10-19]
+
+* Update `INSTALL` procedure to consider existing group settings
+
+
 ## [1.2.0 - 2017-09-30]
 
 + Add support for adding `-t` terminal option automatically
