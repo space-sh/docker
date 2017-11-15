@@ -150,7 +150,7 @@ DOCKER_RUN()
         cmd="sh -c"
     fi
 
-    if [ -t 0 ] && [ -t 1 ]; then
+    if [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then
         flags="${flags} -t"
     fi
 
@@ -220,12 +220,13 @@ DOCKER_EXEC()
         cmd="sh -c"
     fi
 
-    if [ -t 0 ] && [ -t 1 ]; then
+    if [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then
         flags="${flags} -t"
     fi
 
     PRINT "Exec in ${container}." "debug"
     PRINT "cmd: ${cmd}." "debug"
+    PRINT "flags: ${flags}." "debug"
 
     # We need to use eval here so that ${flags} are parsed correctly.
     # shellcheck disable=2086
