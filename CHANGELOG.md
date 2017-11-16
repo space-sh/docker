@@ -1,5 +1,10 @@
 # Space Module change log - docker
 
+## [1.2.2 - 2017-11-16]
+
+* Fix bug in forcing `tty` on `RUN` and `EXEC` functions
+
+
 ## [1.2.1 - 2017-10-19]
 
 * Update `INSTALL` procedure to consider existing group settings
