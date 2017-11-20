@@ -156,9 +156,8 @@ DOCKER_RUN()
 
     PRINT "docker run ${flags} ${container:+--name ${container}} ${image} ${cmd} ${args:+"'$args'"}." "debug"
 
-    # We need to use eval here so that ${flags} are parsed correctly.
     # shellcheck disable=2086
-    eval docker run ${flags} ${container:+--name ${container}} "${image}" ${cmd} ${args:+"\"\$args\""}
+    docker run ${flags} ${container:+--name "${container}"} "${image}" ${cmd} ${args:+"$@"}
 }
 
 #=====================
@@ -228,9 +227,8 @@ DOCKER_EXEC()
     PRINT "cmd: ${cmd}." "debug"
     PRINT "flags: ${flags}." "debug"
 
-    # We need to use eval here so that ${flags} are parsed correctly.
     # shellcheck disable=2086
-    eval docker exec ${flags} ${container} ${cmd} "\"\$args\""
+    docker exec ${flags} ${container} ${cmd} "$@"
 }
 
 #=====================
