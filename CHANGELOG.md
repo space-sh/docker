@@ -1,5 +1,12 @@
 # Space Module change log - docker
 
+## [1.3.0 - 2018-01-04]
+
++ Add support to `FORCE_BASH` Space option in `RUN`
+
++ Add support to `FORCE_BASH` Space option in `EXEC`
+
+
 ## [1.2.3 - 2017-11-21]
 
 * Change `EXEC` and `RUN` to not use `eval`
