@@ -125,6 +125,7 @@ DOCKER_RUN()
 {
     SPACE_SIGNATURE="image:1 [container flags cmd args]"
     SPACE_DEP="PRINT"
+    SPACE_ENV="_FORCE_BASH"
 
     local image="${1}"
     shift
@@ -146,8 +147,14 @@ DOCKER_RUN()
     fi
 
     if [ "${args}" != "" ] && [ "${cmd}" = "" ]; then
-        PRINT "Cannot have args without cmd, setting default: sh -c." "debug"
-        cmd="sh -c"
+        PRINT "Cannot have args without cmd, setting default..." "debug"
+        if [ ${_FORCE_BASH} = "1" ]; then
+            PRINT "Setting default cmd: bash -c." "debug"
+            cmd="bash -c"
+        else
+            PRINT "Setting default cmd: sh -c." "debug"
+            cmd="sh -c"
+        fi
     fi
 
     if [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then
@@ -202,6 +209,7 @@ DOCKER_EXEC()
 {
     SPACE_SIGNATURE="container:1 flags cmd:0 [args]"
     SPACE_DEP="PRINT"
+    SPACE_ENV="_FORCE_BASH"
 
     local container="${1}"
     shift
@@ -215,8 +223,13 @@ DOCKER_EXEC()
     local args="$*"
 
     if [ "${cmd}" = "" ]; then
-        PRINT "Setting default cmd: sh -c." "debug"
-        cmd="sh -c"
+        if [ ${_FORCE_BASH} = "1" ]; then
+            PRINT "Setting default cmd: bash -c." "debug"
+            cmd="bash -c"
+        else
+            PRINT "Setting default cmd: sh -c." "debug"
+            cmd="sh -c"
+        fi
     fi
 
     if [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then
