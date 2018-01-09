@@ -245,6 +245,20 @@ wrap_run:
             desc: Command to execute inside container which will execute the RUN variable, leave blank for default.
         - SPACE_WRAP: DOCKER_WRAP_RUN
 
+stop:
+    @prefix: @{PARENTPATH}
+    @dotdot: prefix
+    _info:
+        title: Stop a running container
+    _env:
+        - container:
+            completion: @{prefix}_list_names/
+        - SPACE_ARGS:
+            arguments:
+                -
+                    completion: @{prefix}_list_names/
+        - RUN: DOCKER_STOP -- ${container}
+
 _list_ids:
     @include: |/ps/
     _env:

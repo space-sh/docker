@@ -1,5 +1,10 @@
 # Space Module change log - docker
 
+## [current]
+
++ Add `/stop/`
+
+
 ## [1.3.0 - 2018-01-04]
 
 + Add support to `FORCE_BASH` Space option in `RUN`

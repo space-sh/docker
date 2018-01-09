@@ -428,3 +428,20 @@ DOCKER_PS()
 {
     docker ps ${@:+"$@"}
 }
+
+#=============================
+# DOCKER_STOP
+#
+# Stop a running container
+#
+# Parameters;
+#   $1: container name(s)
+#
+#=============================
+DOCKER_STOP()
+{
+    # shellcheck disable=SC2034
+    SPACE_SIGNATURE="containers:1"
+
+    docker stop ${@:+"$@"}
+}

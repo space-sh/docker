@@ -50,6 +50,10 @@
 	Run a container
 
 
+## /stop/
+	Stop a running container
+
+
 ## /wrap_exec/
 	Exec a command inside an existing container
 
@@ -245,6 +249,17 @@ Run "docker ps" to list all container.s
   
 ### Parameters:  
 - $@: All arguments are passed on.  
+  
+  
+  
+## DOCKER\_STOP()  
+  
+  
+  
+Stop a running container  
+  
+Parameters;  
+$1: container name(s)  
   
   
   
