@@ -192,6 +192,17 @@ $1: status string, ex "Exited".
   
   
   
+## DOCKER\_EXIST()  
+  
+  
+  
+Check if a container exists.  
+  
+Parameters;  
+$1: container name  
+  
+  
+  
 ## DOCKER\_LOGS()  
   
   
