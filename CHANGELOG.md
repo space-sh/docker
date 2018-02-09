@@ -1,6 +1,6 @@
 # Space Module change log - docker
 
-## [current]
+## [1.5.0 - 2018-02-09]
 
 + Add `DOCKER_EXIST` function
 
