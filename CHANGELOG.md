@@ -1,5 +1,10 @@
 # Space Module change log - docker
 
+## [current]
+
++ Add `DOCKER_EXIST` function
+
+
 ## [1.4.0 - 2018-01-09]
 
 + Add `/stop/`
