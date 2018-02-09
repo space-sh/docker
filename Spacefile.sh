@@ -333,6 +333,29 @@ DOCKER_LS_BY_STATUS()
 }
 
 #=============================
+# DOCKER_EXIST
+#
+# Check if a container exists.
+#
+# Parameters;
+#   $1: container name
+#
+#=============================
+DOCKER_EXIST()
+{
+    # shellcheck disable=SC2034
+    SPACE_SIGNATURE="container:1"
+
+    # shellcheck disable=SC2039
+    local name="${1}"
+    shift
+
+    local list
+    list=$(docker ps -a | grep "${name}")
+    [ -n "${list}" ]
+}
+
+#=============================
 # DOCKER_LOGS
 #
 # Get container logs
