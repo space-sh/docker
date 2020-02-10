@@ -161,7 +161,7 @@ DOCKER_RUN()
         flags="${flags} -t"
     fi
 
-    PRINT "docker run ${flags} ${container:+--name ${container}} ${image} ${cmd} ${args:+"'$args'"}." "debug"
+    PRINT "docker run ${flags} ${container:+--name ${container}} ${image} ${cmd} ${args:+$*}." "debug"
 
     # shellcheck disable=2086
     docker run ${flags} ${container:+--name "${container}"} "${image}" ${cmd} ${args:+"$@"}
@@ -351,7 +351,7 @@ DOCKER_EXIST()
     shift
 
     local list
-    list=$(docker ps -a | grep "${name}")
+    list=$(docker ps -a | grep "\<${name}$")
     [ -n "${list}" ]
 }
 
