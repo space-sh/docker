@@ -1,5 +1,10 @@
 # Space Module change log - docker
 
+## [1.5.2 - 2020-02-19]
+
+* Update documentation
+
+
 ## [1.5.1 - 2020-02-17]
 
 * Better specify previously vague `grep` call in `DOCKER_EXIST`
