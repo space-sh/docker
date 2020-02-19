@@ -1,4 +1,4 @@
-# Docker container management. | [![build status](https://gitlab.com/space-sh/docker/badges/master/build.svg)](https://gitlab.com/space-sh/docker/commits/master)
+# Docker container management. | [![build status](https://gitlab.com/space-sh/docker/badges/master/pipeline.svg)](https://gitlab.com/space-sh/docker/commits/master)
 
 
 ## /enter/
