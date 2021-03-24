@@ -15,8 +15,8 @@
 #
 ---
 _clone:
-    @clone: os
-    @include: os|/_clone/
+    @clone: os:1.3.3
+    @include: os:1.3.3|/_clone/
 @include: |/_clone/
 
 _info:
